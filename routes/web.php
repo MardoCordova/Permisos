@@ -17,7 +17,17 @@ use App\user;
 */
 
 Route::get('/', function () {
-    return view('permisos.index');
+    $id = Auth::user()->id;
+    $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
+    $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
+
+    if ($cargo == 'Secretaria') {
+    	$valor = '';
+    }else{
+    	$valor = 'none';
+    }
+
+    return view('permisos.index', compact('empleadoss','cargo', 'valor'));
 })->middleware('auth');
 
 Auth::routes();
@@ -26,6 +36,13 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('permiso','permisoController')->middleware('auth');
 Route::get('/verPermisos', 'permisoController@verPermisos')->middleware('auth');
+Route::get('/verPermisosAdmin', 'permisoController@verPermisosAdmin')->middleware('auth');
+
+Route::post('/test', 'permisoController@buscador');
+
+
+Route::get('/aceptar', 'permisoController@aceptar')->middleware('auth')->name('permiso.aceptar');
+Route::get('/rechazar', 'permisoController@rechazar')->middleware('auth')->name('permiso.rechazar');
 
 
 

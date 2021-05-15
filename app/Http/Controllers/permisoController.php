@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Auth;
 use App\solicitud_permiso;
 use App\permiso;
+use App\empleado;
+use App\user;
 
 class permisoController extends Controller
 {
@@ -16,7 +18,7 @@ class permisoController extends Controller
      */
     public function index()
     {
-        return view('permisos.index');
+       return redirect('/');
     }
 
     /**
@@ -51,10 +53,23 @@ class permisoController extends Controller
                 $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
-                $medico->tiempo_permiso = $request->tiempoEmpleado;
+
+                $tiempoDisponible = $request->tiempoEmpleado;
+
+                if($tiempoDisponible == 'De 8:00 AM a 12:00 MD' || $tiempoDisponible == 'De 1:00 PM a 5:00 PM'){
+                        $empleados = empleado::findOrFail($id);
+                        $empleados->tiempo_disponible = $empleados->tiempo_disponible - 4; 
+                        $empleados->save();
+                }else{
+
+                         $empleados = empleado::findOrFail($id);
+                         $empleados->tiempo_disponible = $empleados->tiempo_disponible - 8;
+                         $empleados->save();
+                }
+                $medico->tiempo_permiso = $request->tiempoEmpleado; 
                 $medico->motivo_permiso = $request->MotivoPermiso;
                 $medico->estado_revision = "Pendiente";
-                $medico->save();
+                $medico->save(); 
 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
 
@@ -106,8 +121,17 @@ class permisoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
+    { //ACEPTAR
+             
+           $estado = solicitud_permiso::findOrFail($id);
+           $estado->estado_revision = "ACEPTADA"; 
+            $estado->save();
+       
 
+       $datos = solicitud_permiso::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datos','empleadoss'));
     }
 
     /**
@@ -118,7 +142,14 @@ class permisoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $estado = solicitud_permiso::findOrFail($id);
+           $estado->estado_revision = "RECHAZADA"; 
+           $estado->save();
+
+       $datos = solicitud_permiso::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datos','empleadoss'));
     }
 
     /**
@@ -151,6 +182,47 @@ class permisoController extends Controller
         $datos = solicitud_permiso::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         $contAceptados = solicitud_permiso::where('estado_revision','=','Aceptados')->count();
         $contPendientes = solicitud_permiso::where('estado_revision','=','Pendiente')->count();
-        return view('permisos.verPermisos', compact('id','datos','contPendientes','contAceptados'));
+        $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
+
+       
+        return view('permisos.verPermisos', compact('id','datos','contPendientes','contAceptados', 'empleadoss'));
     }
+
+     public function verPermisosAdmin(Request $request)
+    {
+       $id = Auth::user()->id;
+       $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
+       if ($cargo == 'Secretaria') {
+       
+               
+       $datos = solicitud_permiso::all();
+
+       $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
+
+       return view('permisos.verPermisosAdmin', compact('datos','empleadoss')); 
+       } else{
+        return redirect('/');
+       }
+       
+    }
+
+
+    public function buscador(Request $request)
+    {
+
+
+        $id = $request->buscarpor1;
+
+       $idSolicitud = solicitud_permiso::where('id_solicitud','=',$id)->first()->cod_users_fk;
+
+       $nombreEmpleado = user::where('id','=',$idSolicitud)->first()->name;
+
+        $cargoEmpleado = empleado::where('cod_empleado','=',$idSolicitud)->first()->cargo_empleado;
+
+        $msm = $nombreEmpleado. " con el cargo de: ".$cargoEmpleado;
+       return $msm;
+
+        
+    }
+
 }

@@ -24,7 +24,7 @@
     <tr>
       <th>{{$item->id_solicitud}}</th>
       <td>{{$item->motivo_permiso}}</td>
-            <td>{{$item->tiempo_permiso}}</td>
+      <td>{{$item->tiempo_permiso}}</td>
       <td>{{$item->created_at}}</td>
       <td>{{$item->estado_revision}}</td>
       <td><button class="btn btn-success">Modificar</button></td>

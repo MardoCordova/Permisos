@@ -15,4 +15,5 @@ class empleado extends Model
     {
         return $this->hasOne(User::class,'cod_empleado_fk');
     }
+
 }

@@ -125,8 +125,27 @@ body {
   </div>
   
   <div class="nav-links">
-    <a href="/verPermisos" >Mis Permisos</a>
-    
+      <a href="/verPermisos" >Mis Permisos</a>
+
+@php
+use App\empleado;
+  $id = Auth::user()->id;
+    $roll = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
+    if ($roll == 'Secretaria') {
+      $valor = '';
+    }else{
+      $valor = 'none';
+    }
+@endphp
+      <a style="display: {{$valor}}" href="/verPermisosAdmin" >Ver Permisos Empleados </a>
+      
+
+      <a href="#" >Cargo: {{$roll}} </a>
+
+
+
+      <a href="/verPermisos" >Horas Disponibles: {{$empleadoss}}</a>
+
     
 <a  href="{{ route('logout') }}"
      onclick="event.preventDefault();
@@ -139,12 +158,13 @@ body {
     </form>
 
    
- 
+
   </div>
 </div> <br>
 
 
 @yield('alert')
+
 @yield('contenido')
 
 
@@ -175,7 +195,6 @@ body {
                  <label>Departamento al que pertenece</label>
                   <select class="custom-select" name="departamentoEmpleado" >
                     @php
-                    use App\empleado;
                     $id = Auth::user()->id;
                     $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
                     @endphp
