@@ -50,9 +50,14 @@ class permisoController extends Controller
             case 'Medica':
 
                 $medico = new solicitud_permiso();
-                $medico->id_solicitud = rand(1,99)."MED".$id;
+$idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
+                $medico->tiempo_permiso = $request->tiempoEmpleado; 
+                $medico->motivo_permiso = $request->MotivoPermiso;
+                $request->file('CustomFile')->storeAs('public', $idSolicitud); //Evidencia File
+                $medico->estado_revision = "PENDIENTE";
+                $medico->save(); 
 
                 $tiempoDisponible = $request->tiempoEmpleado;
 
@@ -66,10 +71,7 @@ class permisoController extends Controller
                          $empleados->tiempo_disponible = $empleados->tiempo_disponible - 8;
                          $empleados->save();
                 }
-                $medico->tiempo_permiso = $request->tiempoEmpleado; 
-                $medico->motivo_permiso = $request->MotivoPermiso;
-                $medico->estado_revision = "Pendiente";
-                $medico->save(); 
+               
 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
 
@@ -171,8 +173,27 @@ class permisoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {  
+
+        $permiso = solicitud_permiso::findOrFail($id);
+        $permiso->delete();
+
+        $rangoTiempo = $permiso->tiempo_permiso;
+        $idEmpleado = Auth::user()->id;
+      
+
+                if($rangoTiempo == 'De 8:00 AM a 12:00 MD' || $rangoTiempo == 'De 1:00 PM a 5:00 PM'){
+                        $empleados = empleado::findOrFail($idEmpleado);
+                        $empleados->tiempo_disponible = $empleados->tiempo_disponible + 4; 
+                        $empleados->save();
+                }else{
+
+                         $empleados = empleado::findOrFail($idEmpleado);
+                         $empleados->tiempo_disponible = $empleados->tiempo_disponible + 8;
+                         $empleados->save();
+                }
+   
+        return redirect('/verPermisos'); 
     }
 
 
@@ -193,8 +214,7 @@ class permisoController extends Controller
        $id = Auth::user()->id;
        $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
        if ($cargo == 'Secretaria') {
-       
-               
+                 
        $datos = solicitud_permiso::all();
 
        $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
@@ -202,8 +222,7 @@ class permisoController extends Controller
        return view('permisos.verPermisosAdmin', compact('datos','empleadoss')); 
        } else{
         return redirect('/');
-       }
-       
+       }      
     }
 
 
@@ -223,6 +242,16 @@ class permisoController extends Controller
        return $msm;
 
         
+    }
+
+
+    public function confirmar($id)
+    {
+       
+        $nombre = Auth::user()->name;
+        $permiso = permiso::findOrFail($id);
+         $permiso->delete();
+        // return redirect('/permiso')->with('datos','Solictud Cancelada, Estimado: '.$nombre); 
     }
 
 }

@@ -17,6 +17,7 @@ use App\user;
 */
 
 Route::get('/', function () {
+	$datos = solicitud_permiso::all();
     $id = Auth::user()->id;
     $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
@@ -27,7 +28,7 @@ Route::get('/', function () {
     	$valor = 'none';
     }
 
-    return view('permisos.index', compact('empleadoss','cargo', 'valor'));
+    return view('permisos.index', compact('empleadoss','cargo', 'valor','datos'));
 })->middleware('auth');
 
 Auth::routes();
@@ -43,6 +44,30 @@ Route::post('/test', 'permisoController@buscador');
 
 Route::get('/aceptar', 'permisoController@aceptar')->middleware('auth')->name('permiso.aceptar');
 Route::get('/rechazar', 'permisoController@rechazar')->middleware('auth')->name('permiso.rechazar');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

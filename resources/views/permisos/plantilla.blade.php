@@ -179,7 +179,7 @@ use App\empleado;
         </button>
       </div>
       <div class="modal-body">
-        <form method="POST" action="{{route('permiso.store')}}">
+        <form method="POST" action="{{route('permiso.store')}}" enctype="multipart/form-data">
             @csrf
           <div class="row">
             <div class="col">
@@ -237,7 +237,7 @@ use App\empleado;
                   <textarea type="text" class="form-control" name="MotivoPermiso"  placeholder="Detalles sobre su permiso"></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" class="custom-file-input" name="validatedInputGroupCustomFile" >
+                <input type="file" class="custom-file-input" name="CustomFile" >
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
@@ -358,5 +358,36 @@ use App\empleado;
     </div>
   </div>
 </div>
+
+<!-- Permiso Cancelar-->
+<div class="modal fade" id="ModaEliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @foreach($datos as $itemd)
+          <form method="POST" action="{{route('permiso.destroy', $itemd->id_solicitud)}}">
+           @method('DELETE')
+            @csrf
+  
+
+                 <button type="submit" class="btn btn-danger">Eliminar</button>
+
+          </form>
+        @endforeach
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </body>
 </html>
