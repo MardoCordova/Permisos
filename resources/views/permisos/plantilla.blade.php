@@ -186,51 +186,62 @@ use App\empleado;
                 <div style="display: none">
                   <input type="text" name="IDTipoPermiso" value="Medica">
                 </div>
+
+              <div class="form-group">
+                <div class="row"> 
+                  <div class="col">
+                    <label for="exampleInputEmail1">Nombre Solicitante</label>
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                  </div>
+                  <div class="col">
+                    <label>Departamento al que pertenece</label>
+                    <select class="custom-select" name="departamentoEmpleado" >
+                      @php
+                      $id = Auth::user()->id;
+                      $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
+                      @endphp
+                      <option selected disabled value="">{{$departamento}}</option>
+                    </select>   
+                  </div>
+                  </div>
+                </div>
+
+
                 <div class="form-group">
-                  <label for="exampleInputEmail1">Nombre Solicitante</label>
-                  <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">
-                </div>
-
-                 <div class="form-group">
-                 <label>Departamento al que pertenece</label>
-                  <select class="custom-select" name="departamentoEmpleado" >
-                    @php
-                    $id = Auth::user()->id;
-                    $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
-                    @endphp
-                    <option selected disabled value="">{{$departamento}}</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                 <label>Jefe Inmediato</label>
-                  <select class="custom-select" name="jefeEmpleado" >
-                    @php                 
-                    $id = Auth::user()->id;
-                    $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
-                    @endphp
-                    <option selected disabled value="">{{$jefe}}</option>
-                  </select>
-                </div>
-
-                 <div class="form-group">
-                  <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
+                  <div class="row">
+                    <div class="col">
+                         <label>Jefe Inmediato</label>
+                             <select class="custom-select" name="jefeEmpleado" >
+                              @php                 
+                              $id = Auth::user()->id;
+                              $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
+                              @endphp
+                              <option selected disabled value="">{{$jefe}}</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
                     @php                 
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
                   <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                    </div>                
+                  </div>
                 </div>
 
                  <div class="form-group">
-                 <label>Cantidad de Tiempo</label>
-                  <select class="custom-select" name="tiempoEmpleado" >
-                    <option selected disabled value="">Seleccionar Rango de Tiempo</option>
-                    <option>Todo el día</option>
-                    <option>De 8:00 AM a 12:00 MD</option>
-                    <option>De 1:00 PM a 5:00 PM</option>
-                    <option>Otros (Especifique en el sigueinte campo)</option>
-                  </select>
+                  <div class="row">
+                    <div class="col">
+                      <label>Hora de Salida</label>
+                       <input class="form-control" type="time" min="08:00:00" max="05:00:00" name="horaSalida">
+                    </div>
+                    
+                    <div class="col">
+                      <label>Hora de Entrada</label>
+                      <input class="form-control" type="time" name="horaEntrada">
+                    </div>                   
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
@@ -359,33 +370,7 @@ use App\empleado;
   </div>
 </div>
 
-<!-- Permiso Cancelar-->
-<div class="modal fade" id="ModaEliminar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        @foreach($datos as $itemd)
-          <form method="POST" action="{{route('permiso.destroy', $itemd->id_solicitud)}}">
-           @method('DELETE')
-            @csrf
-  
 
-                 <button type="submit" class="btn btn-danger">Eliminar</button>
-
-          </form>
-        @endforeach
-
-
-      </div>
-    </div>
-  </div>
-</div>
 
 
 

@@ -73,6 +73,8 @@ Route::get('/rechazar', 'permisoController@rechazar')->middleware('auth')->name(
 
 Route::get('/ingresarPermisos', function ()
 {
+
+	//INGRESA DATOS DE LOS PERMISOS EN STOCK
 	$dato = new permiso;
 	$dato->id_permiso = "1";
 	$dato->nombre_permiso = "Permiso Medico";
@@ -90,10 +92,8 @@ Route::get('/ingresarPermisos', function ()
 	$dato->nombre_permiso = "Permiso Matrimonio";
 	$dato->descripcion_permiso = "Solicite su permisos matrimonial ya sea civil o religioso con dos días sin goce de sueldo segun la ley establecidad.";
 	$dato->save();
-	});
 
-Route::get('/ingresarDatos', function ()
-{
+	//INGRESA DATOS COMPLETOS DE LOS EMPLEADOS
 	$dato = new empleado;
 	$dato->cod_empleado = "1";
 	$dato->nombre = "Juan Jose";
@@ -129,11 +129,9 @@ Route::get('/ingresarDatos', function ()
 	$dato->cargo_empleado = "Secretaria";
 	$dato->sexo = "F";
 	$dato->save();
-	});
 
 
-Route::get('/ingresarDatosUsers', function ()
-{
+	//INGRESA DATOS DE LOS USERS Y PASS
 	$dato = new user;
 	$dato->id = "1";
 	$dato->cod_empleado_fk = "1";
@@ -159,6 +157,4 @@ Route::get('/ingresarDatosUsers', function ()
 	$dato->email = "lucianahernandez@miempresa.com";
 	$dato->password = '$2y$10$ubkVfHT2yBT.d1lt7BkI5.vq98yI33.Q0Kh/LvmuIPl7cYhtk/p7i';
 	$dato->save();
-
 	});
-

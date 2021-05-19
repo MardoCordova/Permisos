@@ -8,9 +8,16 @@ use App\solicitud_permiso;
 use App\permiso;
 use App\empleado;
 use App\user;
+use DateTime;
 
 class permisoController extends Controller
 {
+
+
+
+
+    
+
     /**
      * Display a listing of the resource.
      *
@@ -39,13 +46,38 @@ class permisoController extends Controller
      */
     public function store(Request $request)
     {
-
+ 
         $IdTipoPermiso = $request->IDTipoPermiso;
         $id = Auth::user()->id;
         $nombre = Auth::user()->name;
 
-        //dd($id);
-        
+                            //Funcion para convertir Time en decimal
+                            function decimalHours($time)
+                            {
+                                $hms = explode(":", $time);
+                                return ($hms[0] + ($hms[1]/60) );
+                            }
+
+                            //Obetenmos los datos del formulario
+                            $horaSalida = $request->horaSalida;
+                            $horaEntrada = $request->horaEntrada; 
+
+                            //Encontrar la diferencia RESTA
+                            $timeSalida = new DateTime($horaSalida);
+                            $timeEntrada = new DateTime($horaEntrada);
+                            $interval = $timeSalida->diff($timeEntrada);
+                            $resta =  $interval->format('%H:%I'); 
+
+                            //Convertir Decimal para insertar en las horas del EMPLEADO
+                            $totalResta = decimalHours($resta); 
+
+                            //Tomamos los datos del formulario a convertir a formato 12 HORAS (VISTA)
+                           $date = new DateTime($horaSalida);
+                           $hSalidaa = $date->format('g:i A');
+                           $date = new DateTime($horaEntrada);
+                           $hEntradaa = $date->format('g:i A');
+                           
+
         switch ($IdTipoPermiso) {
             case 'Medica':
 
@@ -53,25 +85,19 @@ class permisoController extends Controller
 $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
-                $medico->tiempo_permiso = $request->tiempoEmpleado; 
+                $medico->hora_salida = $hSalidaa; 
+                $medico->hora_entrada =  $hEntradaa;
                 $medico->motivo_permiso = $request->MotivoPermiso;
-                $request->file('CustomFile')->storeAs('public', $idSolicitud); //Evidencia File
+               $request->file('CustomFile')->storeAs('public', $idSolicitud); 
                 $medico->estado_revision = "PENDIENTE";
                 $medico->save(); 
 
-                $tiempoDisponible = $request->tiempoEmpleado;
-
-                if($tiempoDisponible == 'De 8:00 AM a 12:00 MD' || $tiempoDisponible == 'De 1:00 PM a 5:00 PM'){
-                        $empleados = empleado::findOrFail($id);
-                        $empleados->tiempo_disponible = $empleados->tiempo_disponible - 4; 
-                        $empleados->save();
-                }else{
-
-                         $empleados = empleado::findOrFail($id);
-                         $empleados->tiempo_disponible = $empleados->tiempo_disponible - 8;
-                         $empleados->save();
-                }
-               
+         
+                    $empleados = empleado::findOrFail($id); 
+                    $horasGastadas =   $totalResta;
+                    $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas;
+                    $empleados->save();
+                                   
 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
 
@@ -174,25 +200,45 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
      */
     public function destroy($id)
     {  
-
+                //Convierte datos de tipo date ("08:30") a decimal
+              function decimalHours($time)
+                            {
+                                $hms = explode(":", $time);
+                                return ($hms[0] + ($hms[1]/60) );
+                            }
+       
+       //Accedemos a la otra de entrada y salida segun el id empleado
         $permiso = solicitud_permiso::findOrFail($id);
+        $horaEntrada = $permiso->hora_entrada; 
+        $horaSalida = $permiso->hora_salida; 
+        
+        //Convertimos las horas de formato 12 Horas a 24 Horas, porque la resta es mas facil en 24 Horas
+        $hSalida  = date("H:i", strtotime($horaSalida)); 
+        $hEntrada  = date("H:i", strtotime($horaEntrada)); 
+
+        //Al estar en formato 24 horas se hace el diferencial de estas dos horas para sacar las horas de permiso
+        $timeSalida = new DateTime($hSalida);
+        $timeEntrada = new DateTime($hEntrada);
+        $interval = $timeSalida->diff($timeEntrada);
+        $resta =  $interval->format('%H:%I');
+
+        //Convertimos la resta resultante en formato time a decimal 
+        $totalResta = decimalHours($resta); 
+                                                        
+        //Eliminamos la solicitud
         $permiso->delete();
 
-        $rangoTiempo = $permiso->tiempo_permiso;
+
+        //Accedemos a las horas disponibles del empleado
         $idEmpleado = Auth::user()->id;
-      
+        $empleados = empleado::findOrFail($idEmpleado);
 
-                if($rangoTiempo == 'De 8:00 AM a 12:00 MD' || $rangoTiempo == 'De 1:00 PM a 5:00 PM'){
-                        $empleados = empleado::findOrFail($idEmpleado);
-                        $empleados->tiempo_disponible = $empleados->tiempo_disponible + 4; 
-                        $empleados->save();
-                }else{
+        //Le sumamos las horas que iba a ocupar al total que ya tenia
+        $empleados->tiempo_disponible = $empleados->tiempo_disponible + $totalResta; 
 
-                         $empleados = empleado::findOrFail($idEmpleado);
-                         $empleados->tiempo_disponible = $empleados->tiempo_disponible + 8;
-                         $empleados->save();
-                }
-   
+        //Guardamos las horas
+        $empleados->save();
+               
         return redirect('/verPermisos'); 
     }
 
