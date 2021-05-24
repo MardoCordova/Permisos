@@ -58,10 +58,16 @@ class permisoController extends Controller
                                 return ($hms[0] + ($hms[1]/60) );
                             }
 
+                        
+                              
+                            
+
                             //Obetenmos los datos del formulario
                             $horaSalida = $request->horaSalida;
                             $horaEntrada = $request->horaEntrada; 
 
+
+                            //dd(decimalHours($horaSalida));
                             //Encontrar la diferencia RESTA
                             $timeSalida = new DateTime($horaSalida);
                             $timeEntrada = new DateTime($horaEntrada);
@@ -88,14 +94,30 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->hora_salida = $hSalidaa; 
                 $medico->hora_entrada =  $hEntradaa;
                 $medico->motivo_permiso = $request->MotivoPermiso;
-               $request->file('CustomFile')->storeAs('public', $idSolicitud); 
+                $request->file('CustomFile')->storeAs('public', $idSolicitud); 
                 $medico->estado_revision = "PENDIENTE";
                 $medico->save(); 
 
          
                     $empleados = empleado::findOrFail($id); 
                     $horasGastadas =   $totalResta;
-                    $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas;
+
+                    $valorSalida = round(decimalHours($horaSalida));
+                    $valorEntrada = round(decimalHours($horaEntrada));
+
+                     //dd($valorSalida." ".$valorEntrada);
+
+                    if (  (  $valorSalida <= 12)  &&  ( $valorEntrada >= 13)  ) {
+                        $horaMedioDia = 1;
+                    }else{
+                        $horaMedioDia = 0;
+                    }
+
+
+                    $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas + $horaMedioDia;
+
+                    //dd($horaMedioDia);
+
                     $empleados->save();
                                    
 
@@ -233,12 +255,21 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
         $idEmpleado = Auth::user()->id;
         $empleados = empleado::findOrFail($idEmpleado);
 
+        //Verificamos si el rango de permiso solo fue PM o todo AM para quitar la hora de almuerzo
+        $valorSalida = decimalHours($hSalida);
+        $valorEntrada = decimalHours($hEntrada);
+        if (  ($valorSalida <= 12)  &&  ($valorEntrada >= 13)  ) {
+                    $horaMedioDia = 1;
+            }else{
+                $horaMedioDia = 0;
+            }
+
         //Le sumamos las horas que iba a ocupar al total que ya tenia
-        $empleados->tiempo_disponible = $empleados->tiempo_disponible + $totalResta; 
+        $empleados->tiempo_disponible = $empleados->tiempo_disponible + $totalResta - $horaMedioDia; 
 
         //Guardamos las horas
-        $empleados->save();
-               
+       $empleados->save();
+       //  dd($horaMedioDia);      
         return redirect('/verPermisos'); 
     }
 
