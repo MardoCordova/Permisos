@@ -1,4 +1,4 @@
-@extends('permisos.plantilla')
+@extends('permisos.plantilla') 
 
 
 

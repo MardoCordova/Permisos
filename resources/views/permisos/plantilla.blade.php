@@ -232,15 +232,38 @@ use App\empleado;
 
                  <div class="form-group">
                   <div class="row">
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                    <script type="text/javascript">
+                        function validateHhMm(inputField) {
+                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+
+                            if (isValid) {
+                              inputField.style.backgroundColor = 'green';
+                            } else {
+                              inputField.style.backgroundColor = 'black';
+                            }
+
+                            return isValid;
+                          }
+                    </script>
+
+                  
                     <div class="col">
                       <label>Hora de Salida</label>
-                       <input class="form-control" type="time" min="08:00:00" max="05:00:00" name="horaSalida">
+                       <input onchange="validateHhMm(this);" class="form-control" type="time" name="horaSalida" required>
                     </div>
                     
                     <div class="col">
                       <label>Hora de Entrada</label>
-                      <input class="form-control" type="time" name="horaEntrada">
-                    </div>                   
+                      <input  onchange="validateHhMm(this);" class="form-control" type="time" name="horaEntrada" required>
+                    </div>   
+                  
+
                   </div>
                 </div>
                 <div class="form-group">
@@ -256,7 +279,7 @@ use App\empleado;
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        <button type="submit" id="dataa" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>
@@ -369,6 +392,7 @@ use App\empleado;
     </div>
   </div>
 </div>
+
 
 
 

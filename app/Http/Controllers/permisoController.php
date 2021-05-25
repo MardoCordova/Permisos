@@ -58,10 +58,6 @@ class permisoController extends Controller
                                 return ($hms[0] + ($hms[1]/60) );
                             }
 
-                        
-                              
-                            
-
                             //Obetenmos los datos del formulario
                             $horaSalida = $request->horaSalida;
                             $horaEntrada = $request->horaEntrada; 
@@ -192,12 +188,13 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
      */
     public function edit($id)
     {
+
         $estado = solicitud_permiso::findOrFail($id);
-           $estado->estado_revision = "RECHAZADA"; 
-           $estado->save();
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
 
        $datos = solicitud_permiso::all();
-        $idEmpleado = Auth::user()->id;
+       $idEmpleado = Auth::user()->id;
        $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
        return view('permisos.verPermisosAdmin', compact('datos','empleadoss'));
     }
@@ -211,7 +208,9 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
      */
     public function update(Request $request, $id)
     {
-        //
+        
+
+
     }
 
     /**
@@ -320,6 +319,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
 
         
     }
+
 
 
     public function confirmar($id)

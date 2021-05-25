@@ -36,17 +36,26 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('permiso','permisoController')->middleware('auth');
-Route::get('/verPermisos', 'permisoController@verPermisos')->middleware('auth');
+Route::get('/verPermisos', 'permisoController@verPermisos')->middleware('auth')->name('permiso.verPermiso');
 Route::get('/verPermisosAdmin', 'permisoController@verPermisosAdmin')->middleware('auth');
 
 Route::post('/test', 'permisoController@buscador');
+
+Route::get('editSolicitud/{$id}', function ()
+{
+	 dd($id);
+         $estado = solicitud_permiso::findOrFail($id);
+         return view('permisos.editPermisos', compact('estado'));
+})->name('permiso.editSolicitud');
+
+Route::get('permiso/{$id}/edit', 'permisoController@verEdit')->name('verEdit');
 
 
 Route::get('/aceptar', 'permisoController@aceptar')->middleware('auth')->name('permiso.aceptar');
 Route::get('/rechazar', 'permisoController@rechazar')->middleware('auth')->name('permiso.rechazar');
 
 
-
+Route::resource('permisoo','permisoController2')->middleware('auth');
 
 
 

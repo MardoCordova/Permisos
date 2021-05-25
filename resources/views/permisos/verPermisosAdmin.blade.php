@@ -51,7 +51,8 @@ function moverDatos(a) {
     <tr>
       <th scope="col">ID Solicitud</th>
       <th scope="col">Motivo</th>
-      <th scope="col">Tiempo de permiso</th>
+      <th scope="col">Hora Salida</th>
+      <th scope="col">Hora Entrada</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
        <th scope="col"></th>
@@ -67,7 +68,8 @@ function moverDatos(a) {
     <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
-      <td>{{$item->tiempo_permiso}}</td>
+      <td>{{$item->hora_salida}}</td>
+      <td>{{$item->hora_entrada}}</td>
       <td>{{$item->created_at}}</td>
       <td>{{$item->estado_revision}}</td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>

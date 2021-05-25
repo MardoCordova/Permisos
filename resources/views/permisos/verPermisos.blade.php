@@ -37,7 +37,8 @@
       <td>{{$item->created_at}}</td>
       <td>{{$item->estado_revision}}</td>
       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
-      <td><a type="button"  class="btn btn-success" >Modificar</a></td>
+      <td><a  href="{{route('permisoo.edit', $item->id_solicitud)}}" class="btn btn-success"  
+              >Modificar</a></td>
 
       @if($item->estado_revision == "PENDIENTE" )
        <td><button  type="submit" class="btn btn-danger"></i>Eliminar</button></td>
