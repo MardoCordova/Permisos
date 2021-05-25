@@ -129,7 +129,11 @@ class permisoController2 extends Controller
 
                             if ($editSolicitud->hora_salida == $hSalidaa && $editSolicitud->hora_entrada == $hEntradaa) {
                               //dd("Entro ");
-                               $horasGastadas = 0;
+                                $editSolicitud->hora_salida = $hSalidaa;
+                                $editSolicitud->hora_entrada = $hEntradaa;                             
+                                $editSolicitud->motivo_permiso = $request->MotivoPermiso;
+                                $editSolicitud->save();
+                                $horasGastadas = 0;
                                //$horaMedioDia = 0;
                                 $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas ;
                                   //dd($empleados->tiempo_disponible."  Igual");
