@@ -93,11 +93,16 @@ class permisoController2 extends Controller
 
                      //dd($valorSalida." ".$valorEntrada);
 
-                    if (  (  $valorSalida <= 12)  &&  ( $valorEntrada >= 13)  ) {
+                 if (  (  $valorSalida <= 12)  &&  ( $valorEntrada >= 13)  ) {
                         $horaMedioDia = 1;
                     }else{
                         $horaMedioDia = 0;
                     }
+
+
+                    //dd($horaMedioDia);
+
+
 
                                //Encontrar la diferencia RESTA
                             $timeSalida = new DateTime($horaSalida);
@@ -123,47 +128,82 @@ class permisoController2 extends Controller
 
 
                             if ($editSolicitud->hora_salida == $hSalidaa && $editSolicitud->hora_entrada == $hEntradaa) {
+                              //dd("Entro ");
                                $horasGastadas = 0;
-                               $horaMedioDia = 0;
-
-
-                                 $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas + $horaMedioDia;
-                                  dd($empleados->tiempo_disponible."  Igual");
-                                //$empleados->save();
-
-                                  return redirect()->route('permiso.verPermiso');
+                               //$horaMedioDia = 0;
+                                $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas ;
+                                  //dd($empleados->tiempo_disponible."  Igual");
+                                $empleados->save();
+                                return redirect()->route('permiso.verPermiso');
          
                             }else{
                                   
                            $horaSvista = $editSolicitud->hora_salida;  
                            $horaEvista = $editSolicitud->hora_entrada; 
 
+                           //Diferencia de times de la BD
+                            $salida = new DateTime($horaSvista); //dato nuevo
+                            $entrada = new DateTime($horaEvista); //dato de la vista
+                            $inter = $salida->diff($entrada);
+                            $resSalida = $inter->format('%H:%I'); 
+                            $totalRestaBD = decimalHours($resSalida); 
+
+                              //Diferencia de times salidaEdit y entradaEdit
+                            $salidaV = new DateTime($horaSalida); //dato nuevo
+                            $entradaV = new DateTime($horaEntrada); //dato de la vista
+                            $interV = $salidaV->diff($entradaV);
+                            $resTotalV = $interV->format('%H:%I'); 
+                            $totalRestaV = decimalHours($resTotalV); 
+
+                         //   dd($totalRestaBD);
+/*
+                            //Diferencia de la salidaBD y salidaEdit
                             $timeSalida = new DateTime($horaSalida); //dato nuevo
                             $timeSalidaVista = new DateTime($horaSvista); //dato de la vista
                             $intervalSalida = $timeSalida->diff($timeSalidaVista);
                             $restaSalida = $intervalSalida->format('%H:%I'); 
                             $totalRestaSalida = decimalHours($restaSalida); 
 
+                            //Diferencia de la entradaBD y entradaEdit
                             $timeEntrada = new DateTime($horaEntrada);
                             $timeEntradaVista = new DateTime($horaEvista);
                             $intervalEntrada = $timeEntrada->diff($timeEntradaVista);
                             $restaEntrada =  $intervalEntrada->format('%H:%I');
                             $totalRestaEntrada = decimalHours($restaEntrada);
 
-                            $RestaTotal = $totalRestaEntrada - $totalRestaSalida;
+                            //Diferencia total de Entradas y salidas ya procesadas
+                            $restaE = new DateTime($restaEntrada);
+                            $restaS = new DateTime($restaSalida);
+                            $interva = $restaE->diff($restaS);
+                            $diffResta =  $interva->format('%H:%I');
+                            $totalDiffResta = decimalHours($diffResta);
 
-                            $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $RestaTotal + $horaMedioDia;
 
-                            dd($empleados->tiempo_disponible."  Diferente");
-                          //  $empleados->save();
-                                return redirect()->route('permiso.verPermiso');
+                            if ($totalRestaBD<$horasGastadas) {
+                                //dd("Menor -----");
+                                $Signo = "1";
+                            }else{
+                                $Signo = "-1";
+                                //dd("Mayo no hay pex ++++");
                             }
+*/                            
+                            $tiempoAntes = $empleados->tiempo_disponible;
+                            $empleados->tiempo_disponible = ($tiempoAntes + $totalRestaBD)  - $totalRestaV ;
 
+
+
+
+//dd("Diferente. Tiempo Disponible:".$empleados->tiempo_disponible." Resta BD:".$totalRestaBD." Almuerzo:".$horaMedioDia." Entrada:".$totalRestaEntrada." Salida:".$totalRestaSalida." Total Diferencia: ".$totalRestaV. " Tiempo Antes:".$tiempoAntes);
+                         $empleados->save();
                             $editSolicitud->hora_salida = $hSalidaa;
                             $editSolicitud->hora_entrada = $hEntradaa;                             
                             $editSolicitud->motivo_permiso = $request->MotivoPermiso;
                             $editSolicitud->save();
-                              return redirect()->route('permiso.verPermiso');
+                                return redirect()->route('permiso.verPermiso');
+                            }
+
+                          
+                            
 
     }
 
