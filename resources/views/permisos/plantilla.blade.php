@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title> Sistema de Permisos - Inicio</title>
+ <link rel="shortcut icon" type="image/png" href="{{ asset('/img/web-design.png') }}">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
@@ -112,8 +113,8 @@ body {
 <div class="nav">
   <input type="checkbox" id="nav-check">
   <div class="nav-header">
-    <div class="nav-title">
-       <a href="/" style="color: white">Sistema de Permisos</a>
+    <div class="nav-links">
+       
     </div>
   </div>
   <div class="nav-btn">
@@ -125,7 +126,8 @@ body {
   </div>
   
   <div class="nav-links">
-      <a href="/verPermisos" >Mis Permisos</a>
+    <a href="/" style="color: white; font-size: 20px">Sistema de Permisos</a>
+    <a href="/verPermisos" >Mis Permisos</a>
 
 @php
 use App\empleado;
@@ -244,8 +246,10 @@ use App\empleado;
 
                             if (isValid) {
                               inputField.style.backgroundColor = 'green';
+                              inputField.style.color = 'white';
                             } else {
                               inputField.style.backgroundColor = 'black';
+                                inputField.style.color = 'white';
                             }
 
                             return isValid;
@@ -255,12 +259,12 @@ use App\empleado;
                   
                     <div class="col">
                       <label>Hora de Salida</label>
-                       <input onchange="validateHhMm(this);" class="form-control" type="time" name="horaSalida" required>
+                       <input onchange="validateHhMm(this);" value="08:00" class="form-control" type="time" name="horaSalida" required>
                     </div>
                     
                     <div class="col">
                       <label>Hora de Entrada</label>
-                      <input  onchange="validateHhMm(this);" class="form-control" type="time" name="horaEntrada" required>
+                      <input  onchange="validateHhMm(this);" class="form-control" type="time" name="horaEntrada" >
                     </div>   
                   
 

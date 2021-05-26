@@ -4,6 +4,25 @@
 
 @section('contenido')
 
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-2">
+      <a class="btn btn-success" href="/imprimir" type="button" >Imprimir Historial Completo </a>  
+    </div>
+    <div class="col-3">
+      <form method="POST" action="{{route('permisoo.imprimirID')}}">
+        @csrf
+      <input  name="idSoli" class="form-control" type="search" placeholder="Buscar por ID Solicitud" aria-label="Buscar"> <br>
+      <button class="btn btn-success" type="submit" >Imprimir Solicitud</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+ <br>
 
 <div class="container-fluid">
 	<div class="col">

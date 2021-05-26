@@ -60,24 +60,50 @@ class permisoController extends Controller
 
                             //Obetenmos los datos del formulario
                             $horaSalida = $request->horaSalida;
-                            $horaEntrada = $request->horaEntrada; 
+                            $horaEntrada = $request->horaEntrada;
+
+                            
+
+                            if (isset($request->horaEntrada)) {
+                                $horaEntrada = $request->horaEntrada;
+
+                                $timeSalida = new DateTime($horaSalida);
+                                $timeEntrada = new DateTime($horaEntrada);
+                                $interval = $timeSalida->diff($timeEntrada);
+                                $resta =  $interval->format('%H:%I'); 
+
+                                //Convertir Decimal para insertar en las horas del EMPLEADO
+                                $totalResta = decimalHours($resta); 
+
+                                //Tomamos los datos del formulario a convertir a formato 12 HORAS (VISTA)
+                               $date = new DateTime($horaSalida);
+                               $hSalidaa = $date->format('g:i A');
+                               $date = new DateTime($horaEntrada);
+                               $hEntradaa = $date->format('g:i A');
+
+                                $empleados = empleado::findOrFail($id); 
+                                $horasGastadas =   $totalResta;
+                                $valorSalida = round(decimalHours($horaSalida));
+                                $valorEntrada = round(decimalHours($horaEntrada));
+                                    if (  (  $valorSalida <= 12)  &&  ( $valorEntrada >= 13)  ) {
+                                        $horaMedioDia = 1;
+                                    }else{
+                                        $horaMedioDia = 0;
+                                    }
+                                $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas + $horaMedioDia;
+                                $empleados->save();
+
+
+                            }else{
+                                $hEntradaa = "NULL";
+                                $date = new DateTime($horaSalida);
+                                $hSalidaa = $date->format('g:i A');
+                            }
 
 
                             //dd(decimalHours($horaSalida));
                             //Encontrar la diferencia RESTA
-                            $timeSalida = new DateTime($horaSalida);
-                            $timeEntrada = new DateTime($horaEntrada);
-                            $interval = $timeSalida->diff($timeEntrada);
-                            $resta =  $interval->format('%H:%I'); 
-
-                            //Convertir Decimal para insertar en las horas del EMPLEADO
-                            $totalResta = decimalHours($resta); 
-
-                            //Tomamos los datos del formulario a convertir a formato 12 HORAS (VISTA)
-                           $date = new DateTime($horaSalida);
-                           $hSalidaa = $date->format('g:i A');
-                           $date = new DateTime($horaEntrada);
-                           $hEntradaa = $date->format('g:i A');
+                            
                            
 
         switch ($IdTipoPermiso) {
@@ -88,6 +114,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
                 $medico->hora_salida = $hSalidaa; 
+
                 $medico->hora_entrada =  $hEntradaa;
                 $medico->motivo_permiso = $request->MotivoPermiso;
                 $request->file('CustomFile')->storeAs('public', $idSolicitud); 
@@ -95,26 +122,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->save(); 
 
          
-                    $empleados = empleado::findOrFail($id); 
-                    $horasGastadas =   $totalResta;
-
-                    $valorSalida = round(decimalHours($horaSalida));
-                    $valorEntrada = round(decimalHours($horaEntrada));
-
-                     //dd($valorSalida." ".$valorEntrada);
-
-                    if (  (  $valorSalida <= 12)  &&  ( $valorEntrada >= 13)  ) {
-                        $horaMedioDia = 1;
-                    }else{
-                        $horaMedioDia = 0;
-                    }
-
-
-                    $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas + $horaMedioDia;
-
-                    //dd($horaMedioDia);
-
-                    $empleados->save();
+                   
                                    
 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
@@ -227,13 +235,29 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                                 $hms = explode(":", $time);
                                 return ($hms[0] + ($hms[1]/60) );
                             }
+
        
-       //Accedemos a la otra de entrada y salida segun el id empleado
+       $permisoNULL = solicitud_permiso::findOrFail($id);
+        $horaEntradaNULL = $permisoNULL->hora_entrada; 
+
+
+             if ($horaEntradaNULL == "NULL") {
+
+                $permiso = solicitud_permiso::findOrFail($id);
+                $horaEntrada = $permiso->hora_entrada; 
+                $horaSalida = $permiso->hora_salida; 
+                $permiso->delete();
+
+                return redirect('/verPermisos');
+
+            }else{
+
+                  //Accedemos a la otra de entrada y salida segun el id empleado
         $permiso = solicitud_permiso::findOrFail($id);
         $horaEntrada = $permiso->hora_entrada; 
         $horaSalida = $permiso->hora_salida; 
-        
-        //Convertimos las horas de formato 12 Horas a 24 Horas, porque la resta es mas facil en 24 Horas
+
+                //Convertimos las horas de formato 12 Horas a 24 Horas, porque la resta es mas facil en 24 Horas
         $hSalida  = date("H:i", strtotime($horaSalida)); 
         $hEntrada  = date("H:i", strtotime($horaEntrada)); 
 
@@ -269,7 +293,11 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
         //Guardamos las horas
        $empleados->save();
        //  dd($horaMedioDia);      
-        return redirect('/verPermisos'); 
+        return redirect('/verPermisos');
+                   
+            }  
+        
+         
     }
 
 

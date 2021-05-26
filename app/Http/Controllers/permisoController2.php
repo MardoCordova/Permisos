@@ -9,6 +9,8 @@ use App\permiso;
 use App\empleado;
 use App\user;
 use DateTime;
+use Barryvdh\DomPDF\Facade as PDF;
+
 class permisoController2 extends Controller
 {
     /**
@@ -99,11 +101,6 @@ class permisoController2 extends Controller
                         $horaMedioDia = 0;
                     }
 
-
-                    //dd($horaMedioDia);
-
-
-
                                //Encontrar la diferencia RESTA
                             $timeSalida = new DateTime($horaSalida);
                             $timeEntrada = new DateTime($horaEntrada);
@@ -144,6 +141,10 @@ class permisoController2 extends Controller
                                   
                            $horaSvista = $editSolicitud->hora_salida;  
                            $horaEvista = $editSolicitud->hora_entrada; 
+                           if ($horaEvista == "NULL") {
+                               $horaEvista = $request->horaSalida;
+                           }
+                           
 
                            //Diferencia de times de la BD
                             $salida = new DateTime($horaSvista); //dato nuevo
@@ -220,5 +221,19 @@ class permisoController2 extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function imprimir()
+    { 
+       $datos = solicitud_permiso::all();
+return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datos'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
+    }
+
+    public function imprimirID(Request $request)
+    {
+
+    $idSoli = solicitud_permiso::where('id_solicitud','=',$request->idSoli)->first();
+    return $pdf = \PDF::loadView('pdfViews.pdfViewID', compact('idSoli'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        
     }
 }
