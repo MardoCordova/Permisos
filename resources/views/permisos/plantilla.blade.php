@@ -171,7 +171,7 @@ use App\empleado;
 
 
 <!-- Permiso Medico -->
-<div class="modal fade " id="ModaPermisoMedico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" onmousemove="validateForm(this)" id="ModaPermisoMedico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -241,30 +241,45 @@ use App\empleado;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+                      function validateForm(inputField) {
+                         document.getElementById("btnEnviar").disabled = true;
+                          file = $("#CustomFile").val();
+                          entrada = $("#horaEntrada").val();
+                          salida = $("#horaSalida").val();
+                           motivo = $("#MotivoPermiso").val();
+  
+                                    while(file.length > 0 && motivo.length > 0){
+                                      document.getElementById("btnEnviar").disabled = false;
+                                      break; 
+                                    }
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                              inputField.style.color = 'white';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                                inputField.style.color = 'white';
-                            }
+                                     if (entrada) {
 
-                            return isValid;
-                          }
+                                      if (entrada>salida && file.length > 0 && motivo.length > 0) {
+                                          
+                                            document.getElementById("btnEnviar").disabled = false;
+                                              //inputField.style.backgroundColor = 'green';
+                                             // inputField.style.color = 'white';
+                                            }else{
+                                               document.getElementById("btnEnviar").disabled = true;
+                                               // inputField.style.backgroundColor = 'green';
+                                                //inputField.style.color = 'white';
+                                                //alert("Ingrese un horario mayor de su salida");
+                                                //var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+                                            }
+                                          }
+                      }
                     </script>
 
                   
                     <div class="col">
                       <label>Hora de Salida</label>
-                       <input onchange="validateHhMm(this);" value="08:00" class="form-control" type="time" name="horaSalida" required>
+                       <input value="08:00" class="form-control" type="time" id="horaSalida" name="horaSalida" required>
                     </div>
                     
                     <div class="col">
                       <label>Hora de Entrada</label>
-                      <input  onchange="validateHhMm(this);" class="form-control" type="time" name="horaEntrada" >
+                      <input   class="form-control" type="time" name="horaEntrada" id="horaEntrada">
                     </div>   
                   
 
@@ -272,10 +287,10 @@ use App\empleado;
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text" class="form-control" name="MotivoPermiso"  placeholder="Detalles sobre su permiso"></textarea>
+                  <textarea  type="text" class="form-control" name="MotivoPermiso" id="MotivoPermiso" placeholder="Detalles sobre su permiso"></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" class="custom-file-input" name="CustomFile" >
+                <input type="file" id="CustomFile" class="custom-file-input" name="CustomFile" >
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
@@ -283,7 +298,7 @@ use App\empleado;
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" id="dataa" class="btn btn-primary">Enviar Solicitud</button>
+        <button type="submit" id="btnEnviar" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>
