@@ -108,23 +108,41 @@ class permisoController extends Controller
 
         switch ($IdTipoPermiso) {
             case 'Medica':
-
                 $medico = new solicitud_permiso();
 $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
                 $medico->hora_salida = $hSalidaa; 
-
+                $medico->fecha_permiso = $request->fechaPermiso;
                 $medico->hora_entrada =  $hEntradaa;
                 $medico->motivo_permiso = $request->MotivoPermiso;
                 $request->file('CustomFile')->storeAs('public', $idSolicitud); 
                 $medico->estado_revision = "PENDIENTE";
                 $medico->save(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
 
-         
-                   
-                                   
+            break;
 
+                  case 'PM':
+                $genero = empleado::findOrFail($id)->sexo;
+                $medico = new solicitud_permiso();
+                if ($genero == "M") {
+                    $gen = "PAT";
+                }else{
+                    $gen = "MAT";
+                }
+               
+$idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
+//dd($idSolicitud);
+                $medico->id_permiso_fk = "2";
+                $medico->cod_users_fk = $id;
+                $medico->fecha_permiso = $request->fechaPM;
+                $medico->hora_salida = "NULL"; 
+                $medico->hora_entrada =  "NULL";
+                $medico->motivo_permiso = $request->MotivoPermisoPM;
+                $request->file('CustomFilePM')->storeAs('public', $idSolicitud); 
+                $medico->estado_revision = "PENDIENTE";
+                $medico->save(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
 
             break;
@@ -134,7 +152,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $relacion = $request->relacionPariente;
                 $medico = new solicitud_permiso();
                 $medico->id_solicitud = rand(1,99)."FAL".$id;
-                $medico->id_permiso_fk = "2";
+                $medico->id_permiso_fk = "3";
                 $medico->cod_users_fk = $id;
                 $medico->motivo_permiso = $request->MotivoPermiso." --- "." Nombre del Fallecido: ".$fallecido.", y mi relación familiar con dicha persona es: ". $relacion;
                 $medico->estado_revision = "Pendiente";
@@ -149,7 +167,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $fecha = $request->FechaEvento;
                 $medico = new solicitud_permiso();
                 $medico->id_solicitud = rand(1,99)."MAT".$id;
-                $medico->id_permiso_fk = "3";
+                $medico->id_permiso_fk = "4";
                 $medico->cod_users_fk = $id;
                 $medico->motivo_permiso = $request->MotivoPermiso." --- "." Nombre de la pareja: ".$pareja.", y la fecha del evento sera: ". $fecha;
                 $medico->estado_revision = "Pendiente";

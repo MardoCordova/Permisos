@@ -52,14 +52,14 @@
     </div>
   </div>
 
-
+  
   <div class="card">
-    <img src="https://image.freepik.com/vector-gratis/novia-novio-que-casan_23-2148411572.jpg" height="300px">
+    <img src="https://image.freepik.com/vector-gratis/ilustracion-color-plano-momentos-felices-familiares-cuidado-ninos-paternidad-primeros-pasos-bebe-joven-madre-padre-e-hijo-personajes-dibujos-animados-2d-interior-sala-estar-fondo_151150-3669.jpg" height="300px">
     <div class="card-body">
-      <h5 class="card-title">Permiso Matrimonio </h5>
-      <p class="card-text">Solicite su permisos matrimonial ya sea civil o religioso con dos días sin goce de sueldo segun la ley establecidad.</p>
+      <h5 class="card-title">Permiso Maternidad o Paternidad </h5>
+      <p class="card-text">Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso</p>
        <p class="card-text row justify-content-center">
-      	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMatrimonio">Obtener</button>
+      	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMPaternidad">Obtener</button>
       </p>
       <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
     </div>

@@ -33,6 +33,7 @@
       <th scope="col">Motivo</th>
       <th scope="col">Hora Salida</th>
       <th scope="col">Hora Entrada</th>
+         <th scope="col">Fecha Solicitante</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
       <th scope="col">Evidencia</th>
@@ -53,6 +54,7 @@
       <td>{{$item->motivo_permiso}}</td>
        <td>{{$item->hora_salida}}</td>
         <td>{{$item->hora_entrada}}</td>
+           <td>{{$item->fecha_permiso}}</td>
       <td>{{$item->created_at}}</td>
       <td>{{$item->estado_revision}}</td>
       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>

@@ -63,8 +63,38 @@ class permisoController2 extends Controller
      */
     public function edit($id)
     {
+           
+        $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $id);
+
+        switch ($tipoPermiso) {
+            case 'MED':
+                 $estado = solicitud_permiso::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisos', compact('estado', 'empleadoss'));
+                break;
+            
+            case 'MAT':
+                 $estado = solicitud_permiso::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosPM', compact('estado', 'empleadoss'));
+                break;
+
+            case 'PAT':
+                 $estado = solicitud_permiso::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosPM', compact('estado', 'empleadoss'));
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
          $estado = solicitud_permiso::findOrFail($id);
-          $idEmpleado = Auth::user()->id;
+         $idEmpleado = Auth::user()->id;
          $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
          return view('permisos.editPermisos', compact('estado', 'empleadoss'));
     }
@@ -78,8 +108,11 @@ class permisoController2 extends Controller
      */
     public function update(Request $request, $id)
     {
-                  
-                            //Funcion para convertir Time en decimal
+                   $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $id);
+
+        switch ($tipoPermiso) {
+            case 'MED':
+               //Funcion para convertir Time en decimal
                             function decimalHours($time)
                             {
                                 $hms = explode(":", $time);
@@ -207,6 +240,30 @@ class permisoController2 extends Controller
                                 return redirect()->route('permiso.verPermiso');
                             }
 
+                break;
+            
+            case 'MAT':
+                     $maternidad = solicitud_permiso::findOrFail($id);
+                     $maternidad->fecha_permiso = $request->fechaPM;
+                     $maternidad->motivo_permiso = $request->MotivoPermisoPM;
+                     $maternidad->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
+                 case 'PAT':
+                     $maternidad = solicitud_permiso::findOrFail($id);
+                     $maternidad->fecha_permiso = $request->fechaPM;
+                     $maternidad->motivo_permiso = $request->MotivoPermisoPM;
+                     $maternidad->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+                            
                           
                             
 

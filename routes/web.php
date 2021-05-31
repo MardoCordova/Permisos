@@ -85,9 +85,10 @@ Route::get('/ingresarPermisos', function ()
 
 	$dato = new permiso;
 	$dato->id_permiso = "3";
-	$dato->nombre_permiso = "Permiso Matrimonio";
-	$dato->descripcion_permiso = "Solicite su permisos matrimonial ya sea civil o religioso con dos días sin goce de sueldo segun la ley establecidad.";
+	$dato->nombre_permiso = "Permiso Maternidad o Paternidad";
+	$dato->descripcion_permiso = "Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso";
 	$dato->save();
+
 
 	//INGRESA DATOS COMPLETOS DE LOS EMPLEADOS
 	$dato = new empleado;
