@@ -1,6 +1,8 @@
 <?php
 use App\permiso;
-use App\solicitud_permiso;
+use App\medico;
+use App\fallecimiento;
+use App\MaterPater;
 use App\empleado;
 use App\user;
 
@@ -17,7 +19,9 @@ use App\user;
 */
 
 Route::get('/', function () {
-	$datos = solicitud_permiso::all();
+	$datosMedicos = medico::all();
+	$datosFallecidos = fallecimiento::all();
+	$datosMaterPater = MaterPater::all();
     $id = Auth::user()->id;
     $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
@@ -28,7 +32,7 @@ Route::get('/', function () {
     	$valor = 'none';
     }
 
-    return view('permisos.index', compact('empleadoss','cargo', 'valor','datos'));
+    return view('permisos.index', compact('empleadoss','cargo', 'valor','datosMedicos','datosFallecidos','datosMaterPater'));
 })->middleware('auth');
 
 Auth::routes();

@@ -12,7 +12,7 @@
   @csrf
     <div class="container">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Maternidad/Paternidad</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Fallecimiento</h5>
         </button>
       </div>
       <div class="modal-body">
@@ -95,18 +95,43 @@
                     $edit = new DateTime($estado->fecha_permiso);
                     $fechaEdit = $edit->format('Y-m-d');
                     @endphp
+<div class="form-group">
 
-                  <div class="form-group">
-                    <label>Fecha Permiso </label>
-                    <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaPM">
+                    <div class="row">
+                        <div class="col">
+                          <label>Fecha Permiso </label>
+                          <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaFA">
+                          </div>
+                    <div class="col"> 
+                          <label>Nombre del Fallecido</label>
+                          <input  class="form-control" value="{{$estado->nombre_fallecido}}" type="text" name="nombreFallecido">
+                    </div>
+                           <div class="col"> 
+                    <label>Relacion con la persona</label>
+                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" >
+                      <option  value="">Seleccione su relación</option>
+                               @php               
+                               use App\fallecimiento;  
+                              $id = Auth::user()->id;
+                              $relacionFallecido = fallecimiento::where('id_solicitud','=',$estado->id_solicitud)->first()->relacion_fallecido;
+                              @endphp
+                      <option selected disabled >{{$relacionFallecido}}</option>
+                      <option>Madre</option>
+                      <option>Padre</option> 
+                      <option>Hermanos</option> 
+                      <option>Hijos</option> 
+                      <option>Otros</option>          
+                    </select> 
+                        </div>                      
+                    </div>
                   </div>
                  
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoPM"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoFA"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
-                <input  type="file" class="custom-file-input" name="CustomFilePM" >
+                <input  type="file" class="custom-file-input" name="CustomFileFA" >
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     

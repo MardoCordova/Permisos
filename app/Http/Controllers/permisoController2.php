@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\solicitud_permiso;
+use App\medico;
+use App\MaterPater;
+use App\fallecimiento;
 use App\permiso;
 use App\empleado;
 use App\user;
@@ -68,24 +70,32 @@ class permisoController2 extends Controller
 
         switch ($tipoPermiso) {
             case 'MED':
-                 $estado = solicitud_permiso::findOrFail($id);
+                 $estado = medico::findOrFail($id);
                  $idEmpleado = Auth::user()->id;
                  $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
                  return view('permisos.editPermisos', compact('estado', 'empleadoss'));
                 break;
             
             case 'MAT':
-                 $estado = solicitud_permiso::findOrFail($id);
+                 $estado = MaterPater::findOrFail($id);
                  $idEmpleado = Auth::user()->id;
                  $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
                  return view('permisos.editPermisosPM', compact('estado', 'empleadoss'));
                 break;
 
             case 'PAT':
-                 $estado = solicitud_permiso::findOrFail($id);
+                 $estado = MaterPater::findOrFail($id);
                  $idEmpleado = Auth::user()->id;
                  $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
                  return view('permisos.editPermisosPM', compact('estado', 'empleadoss'));
+                break;
+
+
+            case 'FAL':
+                 $estado = fallecimiento::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosFA', compact('estado', 'empleadoss'));
                 break;
 
             default:
@@ -151,7 +161,7 @@ class permisoController2 extends Controller
                            $hEntradaa = $date->format('g:i A');
 
 
-                            $editSolicitud = solicitud_permiso::findOrFail($id);
+                            $editSolicitud = medico::findOrFail($id);
                             $id = Auth::user()->id;
                             $empleados = empleado::findOrFail($id);
                             
@@ -243,7 +253,7 @@ class permisoController2 extends Controller
                 break;
             
             case 'MAT':
-                     $maternidad = solicitud_permiso::findOrFail($id);
+                     $maternidad = MaterPater::findOrFail($id);
                      $maternidad->fecha_permiso = $request->fechaPM;
                      $maternidad->motivo_permiso = $request->MotivoPermisoPM;
                      $maternidad->save();
@@ -251,10 +261,20 @@ class permisoController2 extends Controller
                 break;
 
                  case 'PAT':
-                     $maternidad = solicitud_permiso::findOrFail($id);
+                     $maternidad = MaterPater::findOrFail($id);
                      $maternidad->fecha_permiso = $request->fechaPM;
                      $maternidad->motivo_permiso = $request->MotivoPermisoPM;
                      $maternidad->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
+                 case 'FAL':
+                     $fallecimiento = fallecimiento::findOrFail($id);
+                     $fallecimiento->fecha_permiso = $request->fechaFA;
+                     $fallecimiento->motivo_permiso = $request->MotivoPermisoFA;
+                     $fallecimiento->nombre_fallecido = $request->nombreFallecido;
+                     $fallecimiento->relacion_fallecido = $request->relacionFallecido;
+                     $fallecimiento->save();
                       return redirect()->route('permiso.verPermiso');
                 break;
 
@@ -282,15 +302,47 @@ class permisoController2 extends Controller
 
     public function imprimir()
     { 
-       $datos = solicitud_permiso::all();
-return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datos'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
+    $datosMedicos = medico::all();
+    $datosFallecidos = fallecimiento::all();
+    $datosMaterPater = MaterPater::all();
+    return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datosMedicos','datosFallecidos','datosMaterPater'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
     }
 
     public function imprimirID(Request $request)
     {
 
-    $idSoli = solicitud_permiso::where('id_solicitud','=',$request->idSoli)->first();
-    return $pdf = \PDF::loadView('pdfViews.pdfViewID', compact('idSoli'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+    $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $request->idSoli);
+
+ 
+
+
+switch ($tipoPermiso) {
+
+    case 'MED':
+         $idSoli = medico::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewID', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+          case 'MAT':
+         $idSoli = MaterPater::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDmaterpater', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+          case 'PAT':
+         $idSoli = MaterPater::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDmaterpater', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+          case 'FAL':
+         $idSoli = fallecimiento::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDfallecimiento', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+    
+    default:
+        # code...
+        break;
+}
+   
         
     }
 }

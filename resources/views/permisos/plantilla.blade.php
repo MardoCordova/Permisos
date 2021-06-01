@@ -311,55 +311,121 @@ use App\empleado;
 
 
 <!-- Permiso Fallecimiento --> 
-<div class="modal fade " id="ModaPermisoFallecimiento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade" onmousemove="validateFormFAL(this)" id="ModaPermisoFallecimiento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Solicitud de Fallecimiento</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Paternidad/Maternidad</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form method="POST" action="{{route('permiso.store')}}">
-          @csrf
+        <form method="POST" action="{{route('permiso.store')}}" enctype="multipart/form-data">
+            @csrf
           <div class="row">
             <div class="col">
-              <div style="display: none">
-                  <input type="text" name="IDTipoPermiso" value="Fallecimiento">
+                <div style="display: none">
+                  <input type="text" name="IDTipoPermiso" value="FA">
                 </div>
+
+              <div class="form-group">
+                <div class="row"> 
+                  <div class="col">
+                    <label for="exampleInputEmail1">Nombre Solicitante</label>
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                  </div>
+                  <div class="col">
+                    <label>Departamento al que pertenece</label>
+                    <select class="custom-select" name="departamentoEmpleado" >
+                      @php
+                      $id = Auth::user()->id;
+                      $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
+                      @endphp
+                      <option selected disabled value="">{{$departamento}}</option>
+                    </select>   
+                  </div>
+                  </div>
+                </div>
+
+
                 <div class="form-group">
-                  <label>Nombre Empleado</label>
-                  <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">
+                  <div class="row">
+                    <div class="col">
+                         <label>Jefe Inmediato</label>
+                             <select class="custom-select" name="jefeEmpleado" >
+                              @php                 
+                              $id = Auth::user()->id;
+                              $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
+                              @endphp
+                              <option selected disabled value="">{{$jefe}}</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
+                    @php                 
+                    $id = Auth::user()->id;
+                    $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
+                    @endphp
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                    </div>                
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label>Nombre del Fallecido</label>
-                  <input type="text" class="form-control" name="NombreFallecido" placeholder="Ej. Juan Perez">
-                </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                    <script type="text/javascript">
+                      function validateFormFAL(inputField) {
+                         document.getElementById("btnEnviarFA").disabled = true;
+                          file = $("#CustomFileFA").val();
+                           motivo = $("#MotivoPermisoFA").val();
+  
+                                    while(file.length > 0 && motivo.length > 0){
+                                      document.getElementById("btnEnviarFA").disabled = false;
+                                      break; 
+                                    }           
+                      }
+                    </script>
                   <div class="form-group">
-                 <label>Relación</label>
-                  <select class="custom-select" name="relacionPariente" required>
-                    <option selected disabled value="">Seleccionar Relación</option>
-                    <option>Padre</option>
-                    <option>Madre</option>
-                    <option>Hijos</option>
-                    <option>Hermanos</option>
-                  </select>
-                </div>
+
+                    <div class="row">
+                        <div class="col">
+                          <label>Fecha Permiso </label>
+                          <input  class="form-control" type="date" name="fechaFA">
+                          </div>
+                    <div class="col"> 
+                          <label>Nombre del Fallecido</label>
+                          <input  class="form-control" type="text" name="nombreFallecido">
+                    </div>
+                           <div class="col"> 
+                    <label>Relacion con la persona</label>
+                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" >
+                      <option selected value="">Seleccione su relación</option>
+                      <option>Padre</option>
+                      <option>Madre</option>
+                      <option>Hijos</option>
+                      <option>Hermanos</option>
+                      <option>Abuelos</option>
+                      <option>Tios</option>
+                      <option>Sobrinos</option>
+                      <option>Otros</option>
+                    </select> 
+                        </div>                      
+                    </div>
+                  </div>
                 <div class="form-group">
-                  <label>Motivo Permiso</label>
-                  <textarea type="text" class="form-control" name="MotivoPermiso" placeholder="Detalles sobre su permiso"></textarea>
+                  <label for="exampleInputPassword1">Motivo Permiso</label>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoFA" id="MotivoPermisoFA" placeholder="Detalles sobre su permiso"></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" >
+                <input type="file" id="CustomFileFA" class="custom-file-input" name="CustomFileFA">
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
-          </div>
+          </div> <br>
+          <strong><label style="color: red; display: none">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para un lapso de 3 meses, que en horas laborales son: 480 Horas Laborales</label></strong>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        <button type="submit" id="btnEnviarFA" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>
@@ -367,7 +433,7 @@ use App\empleado;
 </div>
 
 <!-- Permiso Maternidad o Paternidad -->
-<div class="modal fade" onmousemove="validateFormPM(this)" id="ModaPermisoMPaternidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" onchange="validateFormPM(this)" id="ModaPermisoMPaternidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -440,24 +506,18 @@ use App\empleado;
                                     while(file.length > 0 && motivo.length > 0){
                                       document.getElementById("btnEnviarPM").disabled = false;
                                       break; 
-                                    }           
+                                    }
+
                       }
                     </script>
-
-                 {{--  @php
-                  $id = Auth::user()->id;
-                  $genero = empleado::findOrFail($id)->first()->sexo;
-                  if ($genero == "F") {
-                    $valuee = ' ';
-                  }else{
-                    $valuee='none';
-                  }
-                  @endphp
- --}}
-
                   <div class="form-group">
-                    <label>Fecha Permiso </label>
-                    <input  class="form-control" type="date" name="fechaPM">
+                    <div class="row">
+                      <div class="col">
+                        <label>Fecha Salida </label>
+                          <input  class="form-control" type="date" name="fechaPMSalida" id="fechaPMSalida">
+                      </div>
+                    </div>
+                   
                   </div>
                  
                 <div class="form-group">
@@ -480,5 +540,7 @@ use App\empleado;
     </div>
   </div>
 </div>
+
+
 </body>
 </html>

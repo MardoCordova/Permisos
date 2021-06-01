@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Auth;
-use App\solicitud_permiso;
+use App\medico;
+use App\MaterPater;
+use App\fallecimiento;
 use App\permiso;
 use App\empleado;
 use App\user;
 use DateTime;
+use Carbon\Carbon;
 
 class permisoController extends Controller
 {
@@ -108,7 +111,7 @@ class permisoController extends Controller
 
         switch ($IdTipoPermiso) {
             case 'Medica':
-                $medico = new solicitud_permiso();
+                $medico = new medico();
 $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
                 $medico->id_permiso_fk = "1";
                 $medico->cod_users_fk = $id;
@@ -124,40 +127,44 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
             break;
 
                   case 'PM':
+
+                  $totalFecha = Carbon::parse($request->fechaPMSalida);
+                  $ddd = $totalFecha->addMonth(3)->format('Y-m-d');
+
+                 
                 $genero = empleado::findOrFail($id)->sexo;
-                $medico = new solicitud_permiso();
+                $materPater = new MaterPater();
                 if ($genero == "M") {
                     $gen = "PAT";
                 }else{
                     $gen = "MAT";
                 }
                
-$idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
-//dd($idSolicitud);
-                $medico->id_permiso_fk = "2";
-                $medico->cod_users_fk = $id;
-                $medico->fecha_permiso = $request->fechaPM;
-                $medico->hora_salida = "NULL"; 
-                $medico->hora_entrada =  "NULL";
-                $medico->motivo_permiso = $request->MotivoPermisoPM;
+$idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
+                $materPater->id_permiso_fk = "3";
+                $materPater->cod_users_fk = $id;
+                $materPater->fecha_salida = $request->fechaPMSalida;
+                $materPater->fecha_entrada = $ddd;
+                $materPater->motivo_permiso = $request->MotivoPermisoPM;
                 $request->file('CustomFilePM')->storeAs('public', $idSolicitud); 
-                $medico->estado_revision = "PENDIENTE";
-                $medico->save(); 
+                $materPater->estado_revision = "PENDIENTE";
+                $materPater->save(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre); 
-
             break;
 
-             case 'Fallecimiento':
-                $fallecido = $request->NombreFallecido;
-                $relacion = $request->relacionPariente;
-                $medico = new solicitud_permiso();
-                $medico->id_solicitud = rand(1,99)."FAL".$id;
-                $medico->id_permiso_fk = "3";
-                $medico->cod_users_fk = $id;
-                $medico->motivo_permiso = $request->MotivoPermiso." --- "." Nombre del Fallecido: ".$fallecido.", y mi relación familiar con dicha persona es: ". $relacion;
-                $medico->estado_revision = "Pendiente";
-                $medico->save();
-
+             case 'FA':
+              $fallecido = new fallecimiento();
+                $idSolicitud =  $fallecido->id_solicitud = rand(1,99)."FAL".$id;
+                $fallecido->id_permiso_fk = "2";
+                $fallecido->cod_users_fk = $id;
+                $fallecido->fecha_permiso = $request->fechaFA;
+                $fallecido->nombre_fallecido = $request->nombreFallecido; 
+                $fallecido->relacion_fallecido = $request->relacionFallecido;
+                $fallecido->motivo_permiso = $request->MotivoPermisoFA;
+                $request->file('CustomFileFA')->storeAs('public', $idSolicitud); 
+                $fallecido->estado_revision = "PENDIENTE";
+                $fallecido->save(); 
+          
                return redirect('/permiso')->with('datos','Solictud de Fallecimiento Enviada, Estimado: '.$nombre); 
 
             break;
@@ -165,7 +172,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
             case 'Matrimonio':
                 $pareja = $request->NombrePareja;
                 $fecha = $request->FechaEvento;
-                $medico = new solicitud_permiso();
+                $medico = new medico();
                 $medico->id_solicitud = rand(1,99)."MAT".$id;
                 $medico->id_permiso_fk = "4";
                 $medico->cod_users_fk = $id;
@@ -193,17 +200,76 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    { //ACEPTAR
-             
-           $estado = solicitud_permiso::findOrFail($id);
+    { 
+             $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $id);
+
+
+             switch ($tipoPermiso) {
+                 case 'MED':
+                        $estado = medico::findOrFail($id);
+                        $estado->estado_revision = "ACEPTADA"; 
+                        $estado->save();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                     break;
+
+                        case 'MAT':
+                        $estado = MaterPater::findOrFail($id);
+                        $estado->estado_revision = "ACEPTADA"; 
+                        $estado->save();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                     break;
+
+                       case 'PAT':
+                        $estado = MaterPater::findOrFail($id);
+                        $estado->estado_revision = "ACEPTADA"; 
+                        $estado->save();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                     break;
+
+                       case 'FAL':
+                        $estado = fallecimiento::findOrFail($id);
+                        $estado->estado_revision = "ACEPTADA"; 
+                        $estado->save();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                     break;
+                 
+                 default:
+                     # code...
+                     break;
+             }
+
+        
+
+            $estado = fallecimiento::findOrFail($id);
+           $estado->estado_revision = "ACEPTADA"; 
+            $estado->save();
+
+            $estado = MaterPater::findOrFail($id);
            $estado->estado_revision = "ACEPTADA"; 
             $estado->save();
        
 
-       $datos = solicitud_permiso::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datos','empleadoss'));
+     
     }
 
     /**
@@ -214,15 +280,70 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
      */
     public function edit($id)
     {
+            $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $id);
 
-        $estado = solicitud_permiso::findOrFail($id);
+            switch ($tipoPermiso) {
+                case 'MED':
+        $estado = medico::findOrFail($id);
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
-
-       $datos = solicitud_permiso::all();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
        $idEmpleado = Auth::user()->id;
        $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datos','empleadoss'));
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+
+                    break;
+
+                    case 'FAL':
+        $estado = fallecimiento::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+          $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                        break;
+                
+                case 'MAT':
+        $estado = MaterPater::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+        $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                    break;
+
+                    case 'PAT':
+        $estado = MaterPater::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+        $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                    break;
+
+
+                       
+                default:
+                    # code...
+                    break;
+            }
+     
+       
+
+       
+
+     
     }
 
     /**
@@ -247,21 +368,25 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
      */
     public function destroy($id)
     {  
-                //Convierte datos de tipo date ("08:30") a decimal
-              function decimalHours($time)
+
+ $tipoPermiso = preg_replace('/[^a-zA-ZáéíóúüÁÉÍÓÚÜñÑ\s]+/u', '', $id);
+
+ switch ($tipoPermiso) {
+     case 'MED':
+        function decimalHours($time)
                             {
                                 $hms = explode(":", $time);
                                 return ($hms[0] + ($hms[1]/60) );
                             }
 
        
-       $permisoNULL = solicitud_permiso::findOrFail($id);
+       $permisoNULL = medico::findOrFail($id);
         $horaEntradaNULL = $permisoNULL->hora_entrada; 
 
 
              if ($horaEntradaNULL == "NULL") {
 
-                $permiso = solicitud_permiso::findOrFail($id);
+                $permiso = medico::findOrFail($id);
                 $horaEntrada = $permiso->hora_entrada; 
                 $horaSalida = $permiso->hora_salida; 
                 $permiso->delete();
@@ -271,7 +396,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
             }else{
 
                   //Accedemos a la otra de entrada y salida segun el id empleado
-        $permiso = solicitud_permiso::findOrFail($id);
+        $permiso = medico::findOrFail($id);
         $horaEntrada = $permiso->hora_entrada; 
         $horaSalida = $permiso->hora_salida; 
 
@@ -314,6 +439,32 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
         return redirect('/verPermisos');
                    
             }  
+         break;
+
+
+         case 'MAT':
+                $materPater = MaterPater::findOrFail($id);
+                $materPater->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+             break;
+     
+        case 'PAT':
+                $materPater = MaterPater::findOrFail($id);
+                $materPater->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+            break;
+ 
+        case 'FAL':
+                $fallecimiento = fallecimiento::findOrFail($id);
+                $fallecimiento->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+            break;
+     default:
+         # code...
+         break;
+ }
+                //Convierte datos de tipo date ("08:30") a decimal
+              
         
          
     }
@@ -322,26 +473,30 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
     public function verPermisos()
     {
         $id = Auth::user()->id; 
-        $datos = solicitud_permiso::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
-        $contAceptados = solicitud_permiso::where('estado_revision','=','Aceptados')->count();
-        $contPendientes = solicitud_permiso::where('estado_revision','=','Pendiente')->count();
+        $datosMedicos = medico::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+        $datosFallecidos = fallecimiento::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+        $datosMaterPater = MaterPater::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+        
         $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
        
-        return view('permisos.verPermisos', compact('id','datos','contPendientes','contAceptados', 'empleadoss'));
+        return view('permisos.verPermisos', compact('id','datosMedicos','datosFallecidos','datosMaterPater','empleadoss'));
     }
 
      public function verPermisosAdmin(Request $request)
     {
        $id = Auth::user()->id;
        $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
-       if ($cargo == 'Secretaria') {
-                 
-       $datos = solicitud_permiso::all();
+       if ($cargo == 'Secretaria') { 
 
+
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
        $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
-       return view('permisos.verPermisosAdmin', compact('datos','empleadoss')); 
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','datosMaterPater','datosFallecidos','empleadoss'));
+
        } else{
         return redirect('/');
        }      
@@ -354,7 +509,7 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99).$gen.$id;
 
         $id = $request->buscarpor1;
 
-       $idSolicitud = solicitud_permiso::where('id_solicitud','=',$id)->first()->cod_users_fk;
+       $idSolicitud = medico::where('id_solicitud','=',$id)->first()->cod_users_fk;
 
        $nombreEmpleado = user::where('id','=',$idSolicitud)->first()->name;
 

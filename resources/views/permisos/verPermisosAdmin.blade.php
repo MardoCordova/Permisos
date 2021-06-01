@@ -40,12 +40,21 @@ function moverDatos(a) {
   $('#buscarpor').val(id);
   $('#enviar').trigger('click');
 }
-
 </script>
 
 
 <div class="container-fluid">
-	<div class="col">
+
+  @php
+$contMedicos = count($datosMedicos);
+if ($contMedicos>0) {
+  $val = '';
+}else{
+  $val = 'none';
+}
+@endphp
+  <label style="display: {{$val}}"><h3>Permisos Medicos</h3></label>
+	<div style="display: {{$val}}" class="col">
 	<table class="table table-hover">
   <thead>
     <tr>
@@ -53,6 +62,7 @@ function moverDatos(a) {
       <th scope="col">Motivo</th>
       <th scope="col">Hora Salida</th>
       <th scope="col">Hora Entrada</th>
+      <th scope="col">Fecha Permiso</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
        <th scope="col"></th>
@@ -62,9 +72,59 @@ function moverDatos(a) {
   <form method="POST" >
     @csrf
       @method('GET')
-  <tbody>
-  
-  	 @foreach ($datos as $item ) 
+ <tbody >
+  	 @foreach ($datosMedicos as $item ) 
+    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+      <th>{{$item->id_solicitud}}</th>  
+      <td>{{$item->motivo_permiso}}</td>
+      <td>{{$item->hora_salida}}</td>
+      <td>{{$item->hora_entrada}}</td>
+      <td>{{$item->fecha_permiso}}</td>
+      <td>{{$item->created_at}}</td>
+      <td>{{$item->estado_revision}}</td>
+      <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
+
+
+       <td><a href="{{route('permiso.edit', $item->id_solicitud)}}" type="button"  class="btn btn-danger">Rechazar</a></td>
+    </tr>
+    @endforeach
+ 
+</tbody>
+  </form>
+</table>
+  </div>
+
+
+@php
+$contFallecidos = count($datosFallecidos);
+if ($contFallecidos>0) {
+  $val = '';
+}else{
+  $val = 'none';
+}
+@endphp
+  <label style="display: {{$val}}"><h3>Permisos Fallecidos</h3></label>
+<div style="display: {{$val}}" class="col">
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">ID Solicitud</th>
+      <th scope="col">Motivo</th>
+      <th scope="col">Hora Salida</th>
+      <th scope="col">Hora Entrada</th>
+      <th scope="col">Fecha Permiso</th>
+      <th scope="col">Fecha Emisión</th>
+      <th scope="col">Estado</th>
+       <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+  </thead>
+  <form method="POST" >
+    @csrf
+      @method('GET')
+
+<tbody style="display: {{$val}}">
+     @foreach ($datosFallecidos as $item ) 
     <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
@@ -79,11 +139,61 @@ function moverDatos(a) {
     </tr>
     @endforeach
  
+</tbody>
+  </form>
+</table>
+  </div>
+
+
+
+
+
+  @php
+$contMaterPater = count($datosMaterPater);
+if ($contMaterPater>0) {
+  $val = '';
+}else{
+  $val = 'none';
+}
+@endphp
+  <label style="display: {{$val}}"><h3>Permisos Matrimonio/Paternidad</h3></label>
+<div style="display: {{$val}}" class="col">
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">ID Solicitud</th>
+      <th scope="col">Motivo</th>
+      <th scope="col">Hora Salida</th>
+      <th scope="col">Hora Entrada</th>
+      <th scope="col">Fecha Permiso</th>
+      <th scope="col">Fecha Emisión</th>
+      <th scope="col">Estado</th>
+       <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+  </thead>
+  <form method="POST" >
+    @csrf
+      @method('GET')
+<tbody style="display: {{$val}}">
+     @foreach ($datosMaterPater as $item ) 
+    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+      <th>{{$item->id_solicitud}}</th>  
+      <td>{{$item->motivo_permiso}}</td>
+      <td>{{$item->fecha_salida}}</td>
+      <td>{{$item->fecha_entrada}}</td>
+      <td>{{$item->created_at}}</td>
+      <td>{{$item->estado_revision}}</td>
+      <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
+
+
+       <td><a href="{{route('permiso.edit', $item->id_solicitud)}}" type="button"  class="btn btn-danger">Rechazar</a></td>
+    </tr>
+    @endforeach
   </tbody>
   </form>
 </table>
-
-	</div>
+	</div> 
 
 </div>
 
