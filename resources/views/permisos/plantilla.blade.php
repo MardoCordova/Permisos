@@ -134,12 +134,12 @@ use App\empleado;
   $id = Auth::user()->id;
     $roll = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado; 
     if ($roll == 'Secretaria') {
-      $valor = '';
+      $valorrr = '';
     }else{
-      $valor = 'none';
+      $valorrr = 'none';
     }
 @endphp
-      <a style="display: {{$valor}}" href="/verPermisosAdmin" >Ver Permisos Empleados </a>
+      <a style="display: {{$valorrr}}" href="/verPermisosAdmin" >Ver Permisos Empleados </a>
       
 
       <a href="#" >Cargo: {{$roll}} </a>
@@ -402,11 +402,7 @@ use App\empleado;
                       <option>Padre</option>
                       <option>Madre</option>
                       <option>Hijos</option>
-                      <option>Hermanos</option>
-                      <option>Abuelos</option>
-                      <option>Tios</option>
-                      <option>Sobrinos</option>
-                      <option>Otros</option>
+                      <option>Conyugue</option>
                     </select> 
                         </div>                      
                     </div>
@@ -518,9 +514,11 @@ use App\empleado;
           $genero = empleado::findOrFail($id)->sexo;
                 if ($genero == "F") {
                     $val = "";
-                    $numDispo = 0;
+                     $valM = "none";
+                    $numDispo = 3;
                 }else{
                     $val = "none";
+                     $valM = "";
                 } 
 
                 if ($genero == "M") {
@@ -538,7 +536,7 @@ use App\empleado;
                       </div>
                        <div class="col" style="display: {{$valM}}">
                         <label>Cantidad de Días</label>
-                          <input  class="form-control" type="number" value="{{$numDispo}}"  name="cantDias" id="cantDias" max="{{$numDispo}}" min="1">
+          <input class="form-control" type="number" value="{{$numDispo}}"  name="cantDias" id="cantDias" max="{{$numDispo}}" min="1">
                           <strong><label>Dias Disponibles: {{$numDispo}} </label></strong>
                       </div>
                     </div>

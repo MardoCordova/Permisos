@@ -50,7 +50,7 @@ class permisoController extends Controller
      */
     public function store(Request $request)
     {
- 
+
         $IdTipoPermiso = $request->IDTipoPermiso;
         $id = Auth::user()->id;
         $nombre = Auth::user()->name;
@@ -128,6 +128,8 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
             break;
 
                   case 'PM':
+
+
 
                   $genero = empleado::findOrFail($id)->sexo;
                     if ($genero == "M") {
@@ -607,16 +609,19 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
     public function buscador(Request $request)
     {
 
+         $id = user::findOrFail($request->buscarpor1)->name; 
 
-        $id = $request->buscarpor1;
+        // dd($request);
+       // $id = $request->buscarpor1;
 
-       $idSolicitud = medico::where('id_solicitud','=',$id)->first()->cod_users_fk;
+      // $idSolicitud = MaterPater::where('id_solicitud','=',$id)->first()->cod_users_fk;
 
-       $nombreEmpleado = user::where('id','=',$idSolicitud)->first()->name;
+       //$nombreEmpleado = user::where('id','=',$id)->first()->name;
 
-        $cargoEmpleado = empleado::where('cod_empleado','=',$idSolicitud)->first()->cargo_empleado;
+  $cargoEmpleado = empleado::where('cod_empleado','=',$request->buscarpor1)->first()->cargo_empleado;
 
-        $msm = $nombreEmpleado. " con el cargo de: ".$cargoEmpleado;
+        $msm = $id. " con el cargo de: ".$cargoEmpleado;
+            
        return $msm;
 
         

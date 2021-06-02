@@ -33,10 +33,21 @@
 	<strong><h5 class="colorText">Relacion Fallecido</h5></strong> 
 	<label>{{$idSoli->relacion_fallecido}}</label>
 </div>
+@php
+ $dt =Carbon\Carbon::parse($idSoli->fecha_permiso);
+  $dateCarbon = $dt->addDays(2)->format('d-M-Y');
 
+  $da = Carbon\Carbon::parse($idSoli->fecha_permiso);
+  $dateCarbon0 = $da->format('d-M-Y');
+@endphp
 <div class="col">
 	<strong><h5 class="colorText">Fecha Permiso</h5></strong> 
-	<label>{{$idSoli->fecha_permiso}}</label>
+	<label>{{$dateCarbon0}}</label>
+</div>
+
+<div class="col">
+	<strong><h5 class="colorText">Fecha Final</h5></strong> 
+	<label>{{$dateCarbon}}</label>
 </div>
 
 <div class="col">

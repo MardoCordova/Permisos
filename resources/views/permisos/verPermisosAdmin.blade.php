@@ -9,7 +9,7 @@
     <input style="display: none" id="buscarpor" name="buscarpor1" class="form-control mr-sm-2" type="search" placeholder="Buscar por ID Solicitud" aria-label="Buscar">
   <button style="display: none" class="btn btn-outline-success my-2 my-sm-0" type="button" id="enviar" name="enviar">Buscar Empleado</button>
 </form>
-</div> <br><br>
+</div> 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
@@ -74,7 +74,7 @@ if ($contMedicos>0) {
       @method('GET')
  <tbody >
   	 @foreach ($datosMedicos as $item ) 
-    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+    <tr onclick="moverDatos(this)" id="{{$item->cod_users_fk}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
       <td>{{$item->hora_salida}}</td>
@@ -125,7 +125,7 @@ if ($contFallecidos>0) {
 
 <tbody style="display: {{$val}}">
      @foreach ($datosFallecidos as $item ) 
-    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+    <tr onclick="moverDatos(this)" id="{{$item->cod_users_fk}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
         @php
@@ -188,7 +188,7 @@ if ($contMaterPater>0) {
       @method('GET')
 <tbody style="display: {{$val}}">
      @foreach ($datosMaterPater as $item ) 
-    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+    <tr onclick="moverDatos(this)" id="{{$item->cod_users_fk}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
           @php
@@ -247,7 +247,7 @@ if ($contMedicosG>0) {
       @method('GET')
 <tbody style="display: {{$val}}">
      @foreach ($datosMedicosG as $item ) 
-    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+    <tr onclick="moverDatos(this)" id="{{$item->cod_users_fk}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
           @php

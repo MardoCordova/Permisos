@@ -29,16 +29,11 @@
 	<label>{{$idSoli->fecha_salida}}</label>
 </div>
 
-
 <div class="col">
 	<strong><h5 class="colorText">Fecha Entrada</h5></strong> 
 	<label>{{$idSoli->fecha_entrada}}</label>
 </div>
 
-<div class="col">
-	<strong><h5 class="colorText">Estado de Revisión</h5></strong> 
-	<label>{{$idSoli->estado_revision}}</label>
-</div>
 
 <div class="col">
 	<strong><h5 class="colorText">Fecha Emisión de la Solicitud</h5></strong> 

@@ -355,10 +355,13 @@ class permisoController2 extends Controller
 
     public function imprimir()
     { 
-    $datosMedicos = medico::all();
-    $datosFallecidos = fallecimiento::all();
-    $datosMaterPater = MaterPater::all();
-    return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datosMedicos','datosFallecidos','datosMaterPater'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
+        $id = Auth::user()->id; 
+
+    $datosMedicos = medico::where('cod_users_fk','=',$id)->get();
+    $datosFallecidos = fallecimiento::where('cod_users_fk','=',$id)->get();
+    $datosMaterPater = MaterPater::where('cod_users_fk','=',$id)->get();
+    $datosMedicosG = medicoG::where('cod_users_fk','=',$id)->get();
+    return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datosMedicos','datosFallecidos','datosMaterPater','datosMedicosG'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
     }
 
     public function imprimirID(Request $request)
@@ -389,6 +392,12 @@ switch ($tipoPermiso) {
           case 'FAL':
          $idSoli = fallecimiento::where('id_solicitud','=',$request->idSoli)->first();
         return $pdf = \PDF::loadView('pdfViews.pdfViewIDfallecimiento', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+
+          case 'MEDG':
+         $idSoli = medicoG::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDMEDG', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
         break;
     
     default:
