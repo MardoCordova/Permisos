@@ -128,9 +128,20 @@ if ($contFallecidos>0) {
     <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
-      <td>{{$item->hora_salida}}</td>
-      <td>{{$item->hora_entrada}}</td>
-      <td>{{$item->created_at}}</td>
+        @php
+
+            $de = new DateTime($item->fecha_permiso);
+            $newDate = $de->format('d-M-Y');
+
+            $dr = new DateTime($item->created_at);
+            $newDateCreated = $dr->format('d-M-Y');
+
+            $dt =Carbon\Carbon::parse($item->fecha_permiso);
+            $dateCarbon = $dt->addDays(2)->format('d-M-Y');
+          @endphp
+      <td>{{$newDate}}</td>
+      <td>{{$dateCarbon}}</td>
+      <td>{{$newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
@@ -180,9 +191,20 @@ if ($contMaterPater>0) {
     <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
       <th>{{$item->id_solicitud}}</th>  
       <td>{{$item->motivo_permiso}}</td>
-      <td>{{$item->fecha_salida}}</td>
-      <td>{{$item->fecha_entrada}}</td>
-      <td>{{$item->created_at}}</td>
+          @php
+
+            $de = new DateTime($item->fecha_salida);
+            $newDate = $de->format('d-M-Y');
+
+            $dr = new DateTime($item->created_at);
+            $newDateCreated = $dr->format('d-M-Y');
+
+            $dt =Carbon\Carbon::parse($item->fecha_entrada);
+            $dateCarbon = $dt->format('d-M-Y');
+          @endphp
+      <td>{{$newDate}}</td>
+      <td>{{$dateCarbon}}</td>
+      <td>{{ $newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
@@ -194,6 +216,67 @@ if ($contMaterPater>0) {
   </form>
 </table>
 	</div> 
+
+
+
+  @php
+$contMedicosG = count($datosMedicosG);
+if ($contMedicosG>0) {
+  $val = '';
+}else{
+  $val = 'none';
+}
+@endphp
+  <label style="display: {{$val}}"><h3>Permisos Medico Grave</h3></label>
+<div style="display: {{$val}}" class="col">
+  <table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">ID Solicitud</th>
+      <th scope="col">Motivo</th>
+      <th scope="col">Fecha Salida</th>
+      <th scope="col">Fecha Entrada</th>
+      <th scope="col">Fecha Emisión</th>
+      <th scope="col">Estado</th>
+       <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+  </thead>
+  <form method="POST" >
+    @csrf
+      @method('GET')
+<tbody style="display: {{$val}}">
+     @foreach ($datosMedicosG as $item ) 
+    <tr onclick="moverDatos(this)" id="{{$item->id_solicitud}}">
+      <th>{{$item->id_solicitud}}</th>  
+      <td>{{$item->motivo_permiso}}</td>
+          @php
+
+            $de = new DateTime($item->fecha_salida);
+            $newDate = $de->format('d-M-Y');
+
+            $dr = new DateTime($item->fecha_entrada);
+            $newDateCreated = $dr->format('d-M-Y');
+
+            $dt =Carbon\Carbon::parse($item->created_at);
+            $dateCarbon = $dt->format('d-M-Y');
+          @endphp
+      <td>{{$newDate}}</td>
+      <td>{{$newDateCreated}}</td>
+      <td>{{ $dateCarbon}}</td>
+      <td>{{$item->estado_revision}}</td>
+      <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
+
+
+       <td><a href="{{route('permiso.edit', $item->id_solicitud)}}" type="button"  class="btn btn-danger">Rechazar</a></td>
+    </tr>
+    @endforeach
+  </tbody>
+  </form>
+</table>
+  </div> 
+
+
 
 </div>
 

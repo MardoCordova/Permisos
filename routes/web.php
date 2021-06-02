@@ -93,6 +93,12 @@ Route::get('/ingresarPermisos', function ()
 	$dato->descripcion_permiso = "Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso";
 	$dato->save();
 
+	$dato = new permiso;
+	$dato->id_permiso = "4";
+	$dato->nombre_permiso = "Permiso Medico Grave";
+	$dato->descripcion_permiso = "Extienda su permiso por cualquier percanse de salud que se grave, algun accidente, cortadura o cualquier insidente que se bastante grave.";
+	$dato->save();
+
 
 	//INGRESA DATOS COMPLETOS DE LOS EMPLEADOS
 	$dato = new empleado;

@@ -35,7 +35,7 @@
       <p class="card-text row justify-content-center">
       	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMedico">Obtener</button>
       </p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+    
     </div>
   </div>
 
@@ -48,22 +48,89 @@
        <p class="card-text row justify-content-center">
       	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoFallecimiento">Obtener</button>
       </p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+    
     </div>
   </div>
 
   
+
+
+
+  @php
+  use App\empleado;
+   $id = Auth::user()->id;
+  $dias = empleado::findOrFail($id)->dispo_materpater;
+  if ($dias == 0) {
+    $msms = "none";
+    $ver ="";
+  }else{
+    $msms = "";
+    $ver = "none";
+  }
+  @endphp
   <div class="card">
     <img src="https://image.freepik.com/vector-gratis/ilustracion-color-plano-momentos-felices-familiares-cuidado-ninos-paternidad-primeros-pasos-bebe-joven-madre-padre-e-hijo-personajes-dibujos-animados-2d-interior-sala-estar-fondo_151150-3669.jpg" height="300px">
     <div class="card-body">
       <h5 class="card-title">Permiso Maternidad o Paternidad </h5>
       <p class="card-text">Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso</p>
        <p class="card-text row justify-content-center">
-      	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMPaternidad">Obtener</button>
+       <strong><label style=" color: red; display: {{$ver}}">Alcanzo el limite de 3 Días Disponibles</label></strong> 
+      	<button style="display: {{$msms}}" class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMPaternidad">Obtener</button>
       </p>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+     
     </div>
   </div>
+</div> <br>
+
+
+
+
+<div class="card-deck">
+   <div class="card">
+    <img src="https://img.freepik.com/vector-gratis/agente-seguros-resolviendo-accidente-automovilistico_53876-43055.jpg?size=626&ext=jpg" height="300px">
+    <div class="card-body">
+      <h5 class="card-title">Permiso Medico Grave </h5>
+      <p class="card-text">Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso</p>
+       <p class="card-text row justify-content-center">
+       
+        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMedicoGrave">Obtener</button>
+      </p>
+     
+    </div>
+  </div>
+
+
+   <div class="card">
+    <img src="" height="300px">
+    <div class="card-body">
+      <h5 class="card-title"> </h5>
+      <p class="card-text">Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso</p>
+       <p class="card-text row justify-content-center">
+       
+        <button  class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMPaternidad">Obtener</button>
+      </p>
+     
+    </div>
+  </div>
+
+
+
+   <div class="card">
+    <img src="" height="300px">
+    <div class="card-body">
+      <h5 class="card-title"></h5>
+      <p class="card-text">Solicite su permisos de materniadad  o paternidad, segun sea su genero se aplicaran las horas en las cuales usted estara solicitando el permiso</p>
+       <p class="card-text row justify-content-center">
+       
+        <button  class="btn btn-outline-primary" data-toggle="modal" data-target="#ModaPermisoMPaternidad">Obtener</button>
+      </p>
+     
+    </div>
+  </div>
+
+
+
+
 
 
 </div>

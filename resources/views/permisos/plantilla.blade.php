@@ -421,7 +421,7 @@ use App\empleado;
               </div>
               </div>     
           </div> <br>
-          <strong><label style="color: red; display: none">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para un lapso de 3 meses, que en horas laborales son: 480 Horas Laborales</label></strong>
+          <strong><label style="color: red;">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para un lapso de 3 días consecutivos, por Fallecimiento.</label></strong>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
@@ -433,7 +433,7 @@ use App\empleado;
 </div>
 
 <!-- Permiso Maternidad o Paternidad -->
-<div class="modal fade" onchange="validateFormPM(this)" id="ModaPermisoMPaternidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" onmousemove="validateFormPM(this)" id="ModaPermisoMPaternidad" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -507,14 +507,39 @@ use App\empleado;
                                       document.getElementById("btnEnviarPM").disabled = false;
                                       break; 
                                     }
-
                       }
                     </script>
+
+
+         @php
+         use App\MaterPater;
+
+          $id = Auth::user()->id;
+          $genero = empleado::findOrFail($id)->sexo;
+                if ($genero == "F") {
+                    $val = "";
+                    $numDispo = 0;
+                }else{
+                    $val = "none";
+                } 
+
+                if ($genero == "M") {
+                    $valM = "";
+                    $numDispo = empleado::findOrFail($id)->dispo_materpater; 
+                }else{
+                    $valM = "none";
+                }  
+          @endphp
                   <div class="form-group">
                     <div class="row">
                       <div class="col">
                         <label>Fecha Salida </label>
                           <input  class="form-control" type="date" name="fechaPMSalida" id="fechaPMSalida">
+                      </div>
+                       <div class="col" style="display: {{$valM}}">
+                        <label>Cantidad de Días</label>
+                          <input  class="form-control" type="number" value="{{$numDispo}}"  name="cantDias" id="cantDias" max="{{$numDispo}}" min="1">
+                          <strong><label>Dias Disponibles: {{$numDispo}} </label></strong>
                       </div>
                     </div>
                    
@@ -530,7 +555,11 @@ use App\empleado;
               </div>
               </div>     
           </div> <br>
-          <strong><label style="color: red; display: none">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para un lapso de 3 meses, que en horas laborales son: 480 Horas Laborales</label></strong>
+
+         
+          <strong><label style="color: red; display: {{$val}}">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para un lapso de 3 meses a partir de la "Fecha Salida" por maternidad.</label></strong>
+
+          <strong><label style="color: red; display: {{$valM}}">*Al momento de realizar esta solicitud, usted esta pidiendo permiso para dias seguidos, si desea tener los 3 dias distribuidos haga citas por separado.</label></strong>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
@@ -540,6 +569,122 @@ use App\empleado;
     </div>
   </div>
 </div>
+
+<!-- Permiso Medico Grave -->
+<div class="modal fade" onmousemove="validateFormMEDG(this)" id="ModaPermisoMedicoGrave" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{route('permiso.store')}}" enctype="multipart/form-data">
+            @csrf
+          <div class="row">
+            <div class="col">
+                <div style="display: none">
+                  <input type="text" name="IDTipoPermiso" value="MedicoG">
+                </div>
+
+              <div class="form-group">
+                <div class="row"> 
+                  <div class="col">
+                    <label for="exampleInputEmail1">Nombre Solicitante</label>
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                  </div>
+                  <div class="col">
+                    <label>Departamento al que pertenece</label>
+                    <select class="custom-select" name="departamentoEmpleado" >
+                      @php
+                      $id = Auth::user()->id;
+                      $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
+                      @endphp
+                      <option selected disabled value="">{{$departamento}}</option>
+                    </select>   
+                  </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                         <label>Jefe Inmediato</label>
+                             <select class="custom-select" name="jefeEmpleado" >
+                              @php                 
+                              $id = Auth::user()->id;
+                              $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
+                              @endphp
+                              <option selected disabled value="">{{$jefe}}</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
+                    @php                 
+                    $id = Auth::user()->id;
+                    $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
+                    @endphp
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                    </div>                
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                  <div class="row">
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                    <script type="text/javascript">
+                      function validateFormMEDG(inputField) {
+                         document.getElementById("btnEnviarMEDG").disabled = true;
+                          file = $("#CustomFileMEDG").val();
+                           motivo = $("#MotivoPermisoMEDG").val();
+  
+                                    while(file.length > 0 && motivo.length > 0){
+                                      document.getElementById("btnEnviarMEDG").disabled = false;
+                                      break; 
+                                    }            
+                      }
+                    </script>
+
+                  <div class="col" >
+                    <label>Fecha Permiso</label>
+                    <input  class="form-control" type="date" name="fechaPermisoMEDG">
+                  </div>
+
+                    <div class="col">
+                      <label>Fecha de Entrada</label>
+                       <input class="form-control" type="date" id="fechaEntradaMEDG" name="fechaEntradaMEDG" >
+                    </div>
+
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Motivo Permiso</label>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoMEDG" id="MotivoPermisoMEDG" placeholder="Detalles sobre su permiso"></textarea>
+                </div>
+                <div class="custom-file">
+                <input type="file" id="CustomFileMEDG" class="custom-file-input" name="CustomFileMEDG" >
+                <label class="custom-file-label" >Subir Evidencia</label>
+              </div>
+              </div>     
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+        <button type="submit" id="btnEnviarMEDG" class="btn btn-primary">Enviar Solicitud</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
 
 
 </body>

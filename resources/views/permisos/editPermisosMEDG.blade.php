@@ -12,7 +12,7 @@
   @csrf
     <div class="container">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Maternidad/Paternidad</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico Grave</h5>
         </button>
       </div>
       <div class="modal-body">
@@ -21,7 +21,7 @@
           <div class="row">
             <div class="col">
                 <div style="display: none">
-                  <input type="text" name="IDTipoPermiso" value="PM">
+                  <input type="text" name="IDTipoPermiso" value="Medica">
                 </div>
 
               <div class="form-group">
@@ -68,7 +68,9 @@
                   </div>
                 </div>
 
-                
+                 <div class="form-group">
+                  <div class="row">
+
 
 
 
@@ -88,57 +90,33 @@
                           }
 
                     </script>
-
-
-                    @php
-                    $estado->fecha_permiso;
-                    $edit = new DateTime($estado->fecha_salida);
-                    $fechaEdit = $edit->format('Y-m-d');
-                    @endphp
-
                      @php
-         use App\MaterPater;
+                     $edit = new DateTime($estado->fecha_salida);
+                    $fechaEdit = $edit->format('Y-m-d');
 
-          $id = Auth::user()->id;
-          $genero = empleado::findOrFail($id)->sexo;
-                if ($genero == "F") {
-                    $val = "";
-                    $numDispo = 0;
-                }else{
-                    $val = "none";
-                } 
-
-                if ($genero == "M") {
-                    $valM = "";
-                    $numDispo = empleado::findOrFail($id)->dispo_materpater; 
-                }else{
-                    $valM = "none";
-                }  
-          @endphp
-
-                  <div class="form-group">
-
-                    <div class="row">
-                      <div class="col">
-                        
-                    <label>Fecha Salida </label>
-                    <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaPM">
-                      </div>
+                    $ee = new DateTime($estado->fecha_entrada);
+                    $fEdit = $ee->format('Y-m-d');
+                      @endphp
+                  
+                    <div class="col"> 
+                      <label>Fecha de Salida</label>
+                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaMEDG" >
+                    </div>
                     
+                    <div class="col">
+                      <label>Fecha de Entrada</label>
+                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaMEDG" >
+                    </div>   
+                  
 
-                     <div class="col" style="display: {{$valM}}">
-                        <label>Dias Disponibles </label>
-                          <input  class="form-control" type="number"  name="cantDias" id="cantDias" max="3" min="1">
-      
-                      </div>
                   </div>
-                 </div>
+                </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoPM"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoMEDGedit"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
-                <input  type="file" class="custom-file-input" name="CustomFilePM" >
+                <input  type="file" class="custom-file-input" name="CustomFileEditMEDG" >
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     

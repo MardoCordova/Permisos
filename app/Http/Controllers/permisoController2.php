@@ -11,6 +11,10 @@ use App\permiso;
 use App\empleado;
 use App\user;
 use DateTime;
+use Carbon\Carbon;
+use App\medicoG;
+
+
 use Barryvdh\DomPDF\Facade as PDF;
 
 class permisoController2 extends Controller
@@ -97,6 +101,13 @@ class permisoController2 extends Controller
                  $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
                  return view('permisos.editPermisosFA', compact('estado', 'empleadoss'));
                 break;
+
+             case 'MEDG':
+                 $estado = medicoG::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosMEDG', compact('estado', 'empleadoss'));
+                break;    
 
             default:
                 # code...
@@ -253,19 +264,52 @@ class permisoController2 extends Controller
                 break;
             
             case 'MAT':
+                  $totalFecha = Carbon::parse($request->fechaPM);
+                  $ddd = $totalFecha->addMonth(3)->format('Y-m-d');
+
                      $maternidad = MaterPater::findOrFail($id);
-                     $maternidad->fecha_permiso = $request->fechaPM;
+                     $maternidad->fecha_salida = $request->fechaPM;
+                     $maternidad->fecha_entrada = $ddd;
                      $maternidad->motivo_permiso = $request->MotivoPermisoPM;
                      $maternidad->save();
                       return redirect()->route('permiso.verPermiso');
                 break;
 
                  case 'PAT':
-                     $maternidad = MaterPater::findOrFail($id);
-                     $maternidad->fecha_permiso = $request->fechaPM;
-                     $maternidad->motivo_permiso = $request->MotivoPermisoPM;
-                     $maternidad->save();
-                      return redirect()->route('permiso.verPermiso');
+                     $fechaSal = Carbon::parse($request->fechaPM); //fecha salida
+                     $fechaSalidaSuma = $fechaSal->addDays($request->cantDias - 1)->format('Y-m-d'); //fechaSalida + dias
+
+                    $entrdaDias = $request->cantDias; //dias adicionales input O DIFERENCIA
+
+                     $idUSER = Auth::user()->id;
+                     $sumatotal = empleado::findOrFail($idUSER);
+                     $sumatotal->dispo_materpater; //suma de dias disponibles //1
+
+                     
+                     if ($entrdaDias == 1) {
+                         $fechaSalidaSuma=$request->fechaPM;
+                     }
+                    
+
+                     if ($entrdaDias <= 3 ) {
+
+                        $mayor = max($entrdaDias,  $sumatotal->dispo_materpater);
+                        $menor = min($entrdaDias,  $sumatotal->dispo_materpater); 
+
+                         $sumatotal->dispo_materpater = 3 - $entrdaDias;
+                        
+                         $sumatotal->save();
+                     }else{
+                        dd("Esta sobrepsando el limite de sus horas !!!");
+                     }
+
+
+                     $paternidad = MaterPater::findOrFail($id);
+                     $paternidad->fecha_salida = $request->fechaPM;
+                     $paternidad->fecha_entrada = $fechaSalidaSuma;
+                     $paternidad->motivo_permiso = $request->MotivoPermisoPM;
+                     $paternidad->save();
+                     return redirect()->route('permiso.verPermiso');
                 break;
 
                  case 'FAL':
@@ -275,6 +319,15 @@ class permisoController2 extends Controller
                      $fallecimiento->nombre_fallecido = $request->nombreFallecido;
                      $fallecimiento->relacion_fallecido = $request->relacionFallecido;
                      $fallecimiento->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
+                  case 'MEDG':
+                     $medicoG = medicoG::findOrFail($id);
+                     $medicoG->fecha_salida = $request->fSalidaMEDG;
+                     $medicoG->fecha_entrada = $request->fEntradaMEDG;
+                     $medicoG->motivo_permiso = $request->MotivoPermisoMEDGedit;
+                     $medicoG->save();
                       return redirect()->route('permiso.verPermiso');
                 break;
 

@@ -12,6 +12,7 @@ use App\empleado;
 use App\user;
 use DateTime;
 use Carbon\Carbon;
+use App\medicoG;
 
 class permisoController extends Controller
 {
@@ -128,18 +129,37 @@ $idSolicitud =  $medico->id_solicitud = rand(1,99)."MED".$id;
 
                   case 'PM':
 
-                  $totalFecha = Carbon::parse($request->fechaPMSalida);
-                  $ddd = $totalFecha->addMonth(3)->format('Y-m-d');
+                  $genero = empleado::findOrFail($id)->sexo;
+                    if ($genero == "M") {
 
-                 
-                $genero = empleado::findOrFail($id)->sexo;
-                $materPater = new MaterPater();
-                if ($genero == "M") {
+                    $totalFecha = Carbon::parse($request->fechaPMSalida);
+                            if ($request->cantDias == 1) {
+                                $dias = 0;
+                                $aux=0;
+                                $contDias = empleado::findOrFail($id);
+                                $contDias->dispo_materpater = $contDias->dispo_materpater - 1;
+                                $contDias->save();
+                            }else{
+                                $aux = 1;
+                                $dias = $request->cantDias;
+                                $contDias = empleado::findOrFail($id);
+                                $mayor = max($request->cantDias,$contDias->dispo_materpater);
+                                $menor = min($request->cantDias,$contDias->dispo_materpater);
+                                $contDias->dispo_materpater = $mayor - $menor;
+                                $contDias->save();
+                            }
+
+                    $ddd = $totalFecha->addDays($dias-$aux)->format('Y-m-d');
                     $gen = "PAT";
-                }else{
-                    $gen = "MAT";
-                }
-               
+
+                    }else{
+
+                        $totalFecha = Carbon::parse($request->fechaPMSalida);
+                        $ddd = $totalFecha->addMonth(3)->format('Y-m-d');
+                        $gen = "MAT";
+                    }
+
+                $materPater = new MaterPater();
 $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
                 $materPater->id_permiso_fk = "3";
                 $materPater->cod_users_fk = $id;
@@ -174,7 +194,7 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
                 $fecha = $request->FechaEvento;
                 $medico = new medico();
                 $medico->id_solicitud = rand(1,99)."MAT".$id;
-                $medico->id_permiso_fk = "4";
+                $medico->id_permiso_fk = "5";
                 $medico->cod_users_fk = $id;
                 $medico->motivo_permiso = $request->MotivoPermiso." --- "." Nombre de la pareja: ".$pareja.", y la fecha del evento sera: ". $fecha;
                 $medico->estado_revision = "Pendiente";
@@ -183,6 +203,20 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
                return redirect('/permiso')->with('datos','Solictud de Matrimonio Enviada, Estimado: '.$nombre); 
 
             break;
+
+            case 'MedicoG':
+                $medicoG = new medicoG();
+$idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
+                $medicoG->id_permiso_fk = "4";
+                $medicoG->cod_users_fk = $id;
+                $medicoG->fecha_salida = $request->fechaPermisoMEDG; 
+                $medicoG->fecha_entrada =  $request->fechaEntradaMEDG;
+                $medicoG->motivo_permiso = $request->MotivoPermisoMEDG;
+                $request->file('CustomFileMEDG')->storeAs('public', $idSolicitud); 
+                $medicoG->estado_revision = "PENDIENTE";
+                $medicoG->save(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre);
+                break;
         
             
             default:
@@ -251,6 +285,19 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
         $idEmpleado = Auth::user()->id;
        $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
        return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                     break;
+
+                         case 'MEDG':
+                        $estado = medicoG::findOrFail($id);
+                        $estado->estado_revision = "ACEPTADA"; 
+                        $estado->save();
+       $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $datosMedicosG = medicoG::all();
+        $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater','datosMedicosG'));
                      break;
                  
                  default:
@@ -331,6 +378,21 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
        $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
        return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
                     break;
+
+                case 'MEDG':
+        $estado = medicoG::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+
+        $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $datosMedicosG = medicoG::all();
+
+       $idEmpleado = Auth::user()->id;
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater','datosMedicosG'));
+                    break;            
 
 
                        
@@ -444,19 +506,56 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
 
          case 'MAT':
                 $materPater = MaterPater::findOrFail($id);
+
                 $materPater->delete(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
              break;
      
         case 'PAT':
                 $materPater = MaterPater::findOrFail($id);
+                $idUSER = Auth::user()->id;
+                $fechaSalidaPM = MaterPater::findOrFail($id)->fecha_salida;
+                $fechaEntradaPM = MaterPater::findOrFail($id)->fecha_entrada;
+
+                $sal = Carbon::createFromDate($fechaSalidaPM);
+                $ent = Carbon::createFromDate($fechaEntradaPM);
+
+                $diferenciaDias = $sal->diffInDays($ent);
+
+                if ($diferenciaDias == 0) {
+                    $diferenciaDias = 1;
+                    
+                $devolucion = empleado::findOrFail($idUSER);
+                $devolucion->dispo_materpater = $devolucion->dispo_materpater + $diferenciaDias;
+                 //dd($devolucion->dispo_materpater." aa");
+                $devolucion->save();
                 $materPater->delete(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+
+
+                }else{
+
+
+                $aux = 1;
+                $devolucion = empleado::findOrFail($idUSER);
+                $devolucion->dispo_materpater = $devolucion->dispo_materpater + $diferenciaDias + $aux;
+                //dd($devolucion->dispo_materpater);
+                $devolucion->save();
+                $materPater->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+                }
+               
             break;
  
         case 'FAL':
                 $fallecimiento = fallecimiento::findOrFail($id);
                 $fallecimiento->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+            break;
+
+             case 'MEDG':
+                $medicoG = medicoG::findOrFail($id);
+                $medicoG->delete(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
             break;
      default:
@@ -476,11 +575,12 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
         $datosMedicos = medico::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         $datosFallecidos = fallecimiento::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         $datosMaterPater = MaterPater::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+        $datosMedicosG = medicoG::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         
         $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
        
-        return view('permisos.verPermisos', compact('id','datosMedicos','datosFallecidos','datosMaterPater','empleadoss'));
+        return view('permisos.verPermisos', compact('id','datosMedicos','datosFallecidos','datosMaterPater','empleadoss','datosMedicosG'));
     }
 
      public function verPermisosAdmin(Request $request)
@@ -493,9 +593,10 @@ $idSolicitud =  $materPater->id_solicitud = rand(1,99).$gen.$id;
        $datosMedicos = medico::all();
        $datosFallecidos = fallecimiento::all();
        $datosMaterPater = MaterPater::all();
+       $datosMedicosG = medicoG::all();
        $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','datosMaterPater','datosFallecidos','empleadoss'));
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','datosMaterPater','datosFallecidos','empleadoss','datosMedicosG'));
 
        } else{
         return redirect('/');

@@ -23,6 +23,7 @@ class CreateEmpleadosTable extends Migration
             $table->string('jefe_inmediato',80);
             $table->string('cargo_empleado',30);
             $table->decimal('tiempo_disponible')->default(120);
+            $table->bigInteger('dispo_materpater')->default(3);
             $table->char('sexo');
             $table->timestamps();
         });
