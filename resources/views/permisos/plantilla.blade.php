@@ -171,7 +171,7 @@ use App\empleado;
 
 
 <!-- Permiso Medico -->
-<div class="modal fade" onmousemove="validateForm(this)" id="ModaPermisoMedico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" onchange="validateForm(this)" id="ModaPermisoMedico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -241,60 +241,72 @@ use App\empleado;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
+
+                     
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPermiso").value= año+"-"+mes+"-"+dia;
+
+});
+
                       function validateForm(inputField) {
                          document.getElementById("btnEnviar").disabled = true;
-                          file = $("#CustomFile").val();
-                          entrada = $("#horaEntrada").val();
-                          salida = $("#horaSalida").val();
-                           motivo = $("#MotivoPermiso").val();
-  
-                                    while(file.length > 0 && motivo.length > 0){
-                                      document.getElementById("btnEnviar").disabled = false;
-                                      break; 
-                                    }
+                        var entrada = $("#horaEntrada").val();
+                         var salida = $("#horaSalida").val();
+                         var fechaEdit = $("#fechaPermiso").val();
+                                               
+                              if (fechaEdit < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaPermiso").value= año+"-"+mes+"-"+dia;
+                              }      
 
                                      if (entrada) {
-
-                                      if (entrada>salida && file.length > 0 && motivo.length > 0) {
-                                          
-                                            document.getElementById("btnEnviar").disabled = false;
-                                              //inputField.style.backgroundColor = 'green';
-                                             // inputField.style.color = 'white';
+                                      if (entrada>salida) {
+                                             document.getElementById("btnEnviar").disabled = false;
                                             }else{
                                                document.getElementById("btnEnviar").disabled = true;
-                                               // inputField.style.backgroundColor = 'green';
-                                                //inputField.style.color = 'white';
-                                                //alert("Ingrese un horario mayor de su salida");
-                                                //var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+                                               alert("La Hora de Entrada tiene que ser mayor que la Hora Salida");
+                                               return 0;
                                             }
+                                          }else{
+                                            document.getElementById("btnEnviar").disabled = false;
                                           }
                       }
                     </script>
 
                   <div class="col" >
                     <label>Fecha Permiso</label>
-                    <input  class="form-control" type="date" name="fechaPermiso">
+                    <input  class="form-control" type="date" name="fechaPermiso" id="fechaPermiso" required="">
                   </div>
 
                     <div class="col">
                       <label>Hora de Salida</label>
-                       <input value="08:00" class="form-control" type="time" id="horaSalida" name="horaSalida" required>
+                       <input  max="16:00" min="08:00" class="form-control" type="time" id="horaSalida" name="horaSalida" required>
                     </div>
                     
                     <div class="col">
                       <label>Hora de Entrada</label>
-                      <input   class="form-control" type="time" name="horaEntrada" id="horaEntrada">
+                      <input  max="16:30" min="08:30" class="form-control" type="time" name="horaEntrada" id="horaEntrada">
                     </div>   
-                  
+            
 
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea  type="text" class="form-control" name="MotivoPermiso" id="MotivoPermiso" placeholder="Detalles sobre su permiso"></textarea>
+                  <textarea  type="text" class="form-control" name="MotivoPermiso" id="MotivoPermiso" placeholder="Detalles sobre su permiso" required></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" id="CustomFile" class="custom-file-input" name="CustomFile" >
+                <input type="file" id="CustomFile" class="custom-file-input" name="CustomFile" required>
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
@@ -373,10 +385,31 @@ use App\empleado;
                 </div>
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                     <script type="text/javascript">
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaFA").value= año+"-"+mes+"-"+dia;
+
+});
+
                       function validateFormFAL(inputField) {
                          document.getElementById("btnEnviarFA").disabled = true;
                           file = $("#CustomFileFA").val();
                            motivo = $("#MotivoPermisoFA").val();
+                             var fechaFA = $("#fechaFA").val();
+                                               
+                              if (fechaFA < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaFA").value= año+"-"+mes+"-"+dia;
+                              }  
   
                                     while(file.length > 0 && motivo.length > 0){
                                       document.getElementById("btnEnviarFA").disabled = false;
@@ -389,15 +422,15 @@ use App\empleado;
                     <div class="row">
                         <div class="col">
                           <label>Fecha Permiso </label>
-                          <input  class="form-control" type="date" name="fechaFA">
+                          <input  class="form-control" type="date" name="fechaFA" id="fechaFA">
                           </div>
                     <div class="col"> 
                           <label>Nombre del Fallecido</label>
-                          <input  class="form-control" type="text" name="nombreFallecido">
+                          <input  class="form-control" type="text" name="nombreFallecido" required>
                     </div>
                            <div class="col"> 
                     <label>Relacion con la persona</label>
-                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" >
+                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" required>
                       <option selected value="">Seleccione su relación</option>
                       <option>Padre</option>
                       <option>Madre</option>
@@ -409,10 +442,10 @@ use App\empleado;
                   </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea  type="text" class="form-control" name="MotivoPermisoFA" id="MotivoPermisoFA" placeholder="Detalles sobre su permiso"></textarea>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoFA" id="MotivoPermisoFA" placeholder="Detalles sobre su permiso" required></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" id="CustomFileFA" class="custom-file-input" name="CustomFileFA">
+                <input type="file" id="CustomFileFA" class="custom-file-input" name="CustomFileFA" required>
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
@@ -494,7 +527,29 @@ use App\empleado;
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
+
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPMSalida").value= año+"-"+mes+"-"+dia;
+
+});
+
                       function validateFormPM(inputField) {
+                           var fechaPMSalida = $("#fechaPMSalida").val();
+                                               
+                              if (fechaPMSalida < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaPMSalida").value= año+"-"+mes+"-"+dia;
+                              }  
                          document.getElementById("btnEnviarPM").disabled = true;
                           file = $("#CustomFilePM").val();
                            motivo = $("#MotivoPermisoPM").val();
@@ -536,7 +591,7 @@ use App\empleado;
                       </div>
                        <div class="col" style="display: {{$valM}}">
                         <label>Cantidad de Días</label>
-          <input class="form-control" type="number" value="{{$numDispo}}"  name="cantDias" id="cantDias" max="{{$numDispo}}" min="1">
+          <input class="form-control" type="number" value="{{$numDispo}}"  name="cantDias" id="cantDias" max="{{$numDispo}}" min="1" required>
                           <strong><label>Dias Disponibles: {{$numDispo}} </label></strong>
                       </div>
                     </div>
@@ -545,10 +600,10 @@ use App\empleado;
                  
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea  type="text" class="form-control" name="MotivoPermisoPM" id="MotivoPermisoPM" placeholder="Detalles sobre su permiso"></textarea>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoPM" id="MotivoPermisoPM" placeholder="Detalles sobre su permiso" required></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" id="CustomFilePM" class="custom-file-input" name="CustomFilePM" >
+                <input type="file" id="CustomFilePM" class="custom-file-input" name="CustomFilePM" required>
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
@@ -569,7 +624,7 @@ use App\empleado;
 </div>
 
 <!-- Permiso Medico Grave -->
-<div class="modal fade" onmousemove="validateFormMEDG(this)" id="ModaPermisoMedicoGrave" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" onchange="validateFormMEDG(this)" id="ModaPermisoMedicoGrave" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -639,7 +694,46 @@ use App\empleado;
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPermisoMEDG").value= año+"-"+mes+"-"+dia;
+
+});
                       function validateFormMEDG(inputField) {
+                          var fechaPermisoMEDG = $("#fechaPermisoMEDG").val();
+                          var fechaEntradaMEDG = $("#fechaEntradaMEDG").val();
+
+                             
+                                               
+                              if (fechaPermisoMEDG < fechaNOW && fechaPermisoMEDG.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fechaPermisoMEDG").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fechaEntradaMEDG < fechaNOW && fechaEntradaMEDG.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaPermisoMEDG);
+                              document.getElementById("fechaEntradaMEDG").value= "";
+                                  document.getElementById("fechaPermisoMEDG").value= "";
+                                return 0;
+                              }    
+
+                              if (fechaPermisoMEDG > fechaEntradaMEDG && fechaEntradaMEDG.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fechaPermisoMEDG").value= "";
+                                 document.getElementById("fechaEntradaMEDG").value= "";
+                                return 0;
+                              }
+
                          document.getElementById("btnEnviarMEDG").disabled = true;
                           file = $("#CustomFileMEDG").val();
                            motivo = $("#MotivoPermisoMEDG").val();
@@ -653,22 +747,22 @@ use App\empleado;
 
                   <div class="col" >
                     <label>Fecha Permiso</label>
-                    <input  class="form-control" type="date" name="fechaPermisoMEDG">
+                    <input  class="form-control" type="date" name="fechaPermisoMEDG" id="fechaPermisoMEDG" required>
                   </div>
 
                     <div class="col">
                       <label>Fecha de Entrada</label>
-                       <input class="form-control" type="date" id="fechaEntradaMEDG" name="fechaEntradaMEDG" >
+                       <input class="form-control" type="date" id="fechaEntradaMEDG" name="fechaEntradaMEDG" required>
                     </div>
 
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea  type="text" class="form-control" name="MotivoPermisoMEDG" id="MotivoPermisoMEDG" placeholder="Detalles sobre su permiso"></textarea>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoMEDG" id="MotivoPermisoMEDG" placeholder="Detalles sobre su permiso" required></textarea>
                 </div>
                 <div class="custom-file">
-                <input type="file" id="CustomFileMEDG" class="custom-file-input" name="CustomFileMEDG" >
+                <input type="file" id="CustomFileMEDG" class="custom-file-input" name="CustomFileMEDG" required>
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
