@@ -5,6 +5,9 @@ use App\fallecimiento;
 use App\MaterPater;
 use App\empleado;
 use App\user;
+use App\medicoG;
+use App\personal;
+use App\obligacionCiudadano;
 
 
 /*
@@ -34,6 +37,28 @@ Route::get('/', function () {
 
     return view('permisos.index', compact('empleadoss','cargo', 'valor','datosMedicos','datosFallecidos','datosMaterPater'));
 })->middleware('auth');
+
+Route::get('/verAdmin', function () {
+	  $idEmpleado = Auth::user()->id;
+	$cargo = empleado::where('cod_empleado','=',$idEmpleado)->first()->cargo_empleado; 
+       if ($cargo == 'Secretaria') { 
+
+	  $datosMedicos = medico::all();
+       $datosFallecidos = fallecimiento::all();
+       $datosMaterPater = MaterPater::all();
+       $datosMedicosG = medicoG::all();
+       $datosPersonales = personal::all();
+        $datosObligacion = obligacionCiudadano::all();
+
+
+     
+       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater','datosMedicosG','datosPersonales','datosObligacion'));
+   }else{
+   	 return redirect('/');
+   }
+})->middleware('auth');
+
 
 Auth::routes();
 
@@ -97,6 +122,18 @@ Route::get('/ingresarPermisos', function ()
 	$dato->id_permiso = "4";
 	$dato->nombre_permiso = "Permiso Medico Grave";
 	$dato->descripcion_permiso = "Extienda su permiso por cualquier percanse de salud que se grave, algun accidente, cortadura o cualquier insidente que se bastante grave.";
+	$dato->save();
+
+		$dato = new permiso;
+	$dato->id_permiso = "6";
+	$dato->nombre_permiso = "Permiso Personal";
+	$dato->descripcion_permiso = "Solicite su permisos personales sobre cualquier percance o inconveniente que usted este pasando sin necesidad de presentar una evidencia.";
+	$dato->save();
+
+		$dato = new permiso;
+	$dato->id_permiso = "7";
+	$dato->nombre_permiso = "Permiso por Obligacion Ciudadana";
+	$dato->descripcion_permiso = "Solicite su permisos por obligacion ciudadana, por cualquier evento que requiera hacer de su presencia de manera legal";
 	$dato->save();
 
 

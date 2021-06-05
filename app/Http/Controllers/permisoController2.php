@@ -13,6 +13,8 @@ use App\user;
 use DateTime;
 use Carbon\Carbon;
 use App\medicoG;
+use App\personal;
+use App\obligacionCiudadano;
 
 
 use Barryvdh\DomPDF\Facade as PDF;
@@ -107,7 +109,21 @@ class permisoController2 extends Controller
                  $idEmpleado = Auth::user()->id;
                  $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
                  return view('permisos.editPermisosMEDG', compact('estado', 'empleadoss'));
-                break;    
+                break;   
+
+                 case 'PER':
+                 $estado = personal::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosPER', compact('estado', 'empleadoss'));
+                break;  
+
+                 case 'OBL':
+                 $estado = obligacionCiudadano::findOrFail($id);
+                 $idEmpleado = Auth::user()->id;
+                 $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
+                 return view('permisos.editPermisosOBL', compact('estado', 'empleadoss'));
+                break;  
 
             default:
                 # code...
@@ -331,6 +347,24 @@ class permisoController2 extends Controller
                       return redirect()->route('permiso.verPermiso');
                 break;
 
+                  case 'PER':
+                     $perosnal = personal::findOrFail($id);
+                     $perosnal->fecha_salida = $request->fSalidaPER;
+                     $perosnal->fecha_entrada = $request->fEntradaPER;
+                     $perosnal->motivo_permiso = $request->MotivoPermisoPERedit;
+                     $perosnal->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
+                 case 'OBL':
+                     $obligacionCiudadano = obligacionCiudadano::findOrFail($id);
+                     $obligacionCiudadano->fecha_salida = $request->fSalidaOBL;
+                     $obligacionCiudadano->fecha_entrada = $request->fEntradaOBL;
+                     $obligacionCiudadano->motivo_permiso = $request->MotivoPermisoOBLedit;
+                     $obligacionCiudadano->save();
+                      return redirect()->route('permiso.verPermiso');
+                break;
+
             default:
                 # code...
                 break;
@@ -361,7 +395,10 @@ class permisoController2 extends Controller
     $datosFallecidos = fallecimiento::where('cod_users_fk','=',$id)->get();
     $datosMaterPater = MaterPater::where('cod_users_fk','=',$id)->get();
     $datosMedicosG = medicoG::where('cod_users_fk','=',$id)->get();
-    return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datosMedicos','datosFallecidos','datosMaterPater','datosMedicosG'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
+    $datosPersonales = personal::where('cod_users_fk','=',$id)->get();
+    $datosObligacion = obligacionCiudadano::where('cod_users_fk','=',$id)->get();
+
+    return $pdf = \PDF::loadView('pdfViews.pdfviewAll', compact('datosMedicos','datosFallecidos','datosMaterPater','datosPersonales','datosMedicosG','datosObligacion'))->setPaper('a3', 'landscape')->stream('pdfviewAll.pdf');
     }
 
     public function imprimirID(Request $request)
@@ -398,6 +435,16 @@ switch ($tipoPermiso) {
           case 'MEDG':
          $idSoli = medicoG::where('id_solicitud','=',$request->idSoli)->first();
         return $pdf = \PDF::loadView('pdfViews.pdfViewIDMEDG', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+         case 'PER':
+         $idSoli = personal::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDPER', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
+        break;
+
+        case 'OBL':
+         $idSoli = obligacionCiudadano::where('id_solicitud','=',$request->idSoli)->first();
+        return $pdf = \PDF::loadView('pdfViews.pdfViewIDOBL', compact('idSoli','tipoPermiso'))->setPaper('a5', 'horizontally')->stream('pdfViewID.pdf');
         break;
     
     default:

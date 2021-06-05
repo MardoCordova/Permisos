@@ -779,5 +779,319 @@ $( document ).ready(function() {
 
 
 
+
+<!-- Permiso Personales -->
+<div class="modal fade" onchange="validateFormPER(this)" id="ModaPermisoPersonale" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{route('permiso.store')}}" enctype="multipart/form-data">
+            @csrf
+          <div class="row">
+            <div class="col">
+                <div style="display: none">
+                  <input type="text" name="IDTipoPermiso" value="Personal">
+                </div>
+
+              <div class="form-group">
+                <div class="row"> 
+                  <div class="col">
+                    <label for="exampleInputEmail1">Nombre Solicitante</label>
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                  </div>
+                  <div class="col">
+                    <label>Departamento al que pertenece</label>
+                    <select class="custom-select" name="departamentoEmpleado" >
+                      @php
+                      $id = Auth::user()->id;
+                      $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
+                      @endphp
+                      <option selected disabled value="">{{$departamento}}</option>
+                    </select>   
+                  </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                         <label>Jefe Inmediato</label>
+                             <select class="custom-select" name="jefeEmpleado" >
+                              @php                 
+                              $id = Auth::user()->id;
+                              $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
+                              @endphp
+                              <option selected disabled value="">{{$jefe}}</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
+                    @php                 
+                    $id = Auth::user()->id;
+                    $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
+                    @endphp
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                    </div>                
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                  <div class="row">
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                    <script type="text/javascript">
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPermisoPER").value= año+"-"+mes+"-"+dia;
+
+});
+                      function validateFormPER(inputField) {
+                          var fechaPermisoPER = $("#fechaPermisoPER").val();
+                          var fechaEntradaPER = $("#fechaEntradaPER").val();
+
+                             
+                                               
+                              if (fechaPermisoPER < fechaNOW && fechaPermisoPER.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fechaPermisoPER").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fechaEntradaPER < fechaNOW && fechaEntradaPER.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaPermisoPER);
+                              document.getElementById("fechaEntradaPER").value= "";
+                                  document.getElementById("fechaPermisoPER").value= "";
+                                return 0;
+                              }    
+
+                              if (fechaPermisoPER > fechaEntradaPER && fechaEntradaPER.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fechaPermisoPER").value= "";
+                                 document.getElementById("fechaEntradaPER").value= "";
+                                return 0;
+                              }
+
+                         document.getElementById("btnEnviarPER").disabled = true;
+                         
+                           motivo = $("#MotivoPermisoPER").val();
+  
+                                    while(motivo.length > 0){
+                                      document.getElementById("btnEnviarPER").disabled = false;
+                                      break; 
+                                    }            
+                      }
+                    </script>
+
+                  <div class="col" >
+                    <label>Fecha Permiso</label>
+                    <input  class="form-control" type="date" name="fechaPermisoPER" id="fechaPermisoPER" required>
+                  </div>
+
+                    <div class="col">
+                      <label>Fecha de Entrada</label>
+                       <input class="form-control" type="date" id="fechaEntradaPER" name="fechaEntradaPER" required>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Motivo Permiso</label>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoPER" id="MotivoPermisoPER" placeholder="Detalles sobre su permiso" required></textarea>
+                </div>
+              </div>     
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+        <button type="submit" id="btnEnviarPER" class="btn btn-primary">Enviar Solicitud</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Permiso Obligacion -->
+<div class="modal fade" onchange="validateFormOBL(this)" id="ModaPermisoObligacion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud por Obligaciones de Ciudadano</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{route('permiso.store')}}" enctype="multipart/form-data">
+            @csrf
+          <div class="row">
+            <div class="col">
+                <div style="display: none">
+                  <input type="text" name="IDTipoPermiso" value="OBL">
+                </div>
+
+              <div class="form-group">
+                <div class="row"> 
+                  <div class="col">
+                    <label for="exampleInputEmail1">Nombre Solicitante</label>
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                  </div>
+                  <div class="col">
+                    <label>Departamento al que pertenece</label>
+                    <select class="custom-select" name="departamentoEmpleado" >
+                      @php
+                      $id = Auth::user()->id;
+                      $departamento = empleado::where('cod_empleado','=',$id)->first()->departamento;
+                      @endphp
+                      <option selected disabled value="">{{$departamento}}</option>
+                    </select>   
+                  </div>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col">
+                         <label>Jefe Inmediato</label>
+                             <select class="custom-select" name="jefeEmpleado" >
+                              @php                 
+                              $id = Auth::user()->id;
+                              $jefe = empleado::where('cod_empleado','=',$id)->first()->jefe_inmediato;
+                              @endphp
+                              <option selected disabled value="">{{$jefe}}</option>
+                            </select>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputPassword1">Cargo que desempeña en la empresa</label>
+                    @php                 
+                    $id = Auth::user()->id;
+                    $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
+                    @endphp
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                    </div>                
+                  </div>
+                </div>
+
+                 <div class="form-group">
+                  <div class="row">
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                    <script type="text/javascript">
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
+
+ if (mes.length <2) 
+  mes = "0"+mes;  
+
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPermisoOBL").value= año+"-"+mes+"-"+dia;
+
+});
+                      function validateFormOBL(inputField) {
+                          var fechaPermisoOBL = $("#fechaPermisoOBL").val();
+                          var fechaEntradaOBL = $("#fechaEntradaOBL").val();
+
+                             
+                                               
+                              if (fechaPermisoOBL < fechaNOW && fechaPermisoOBL.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fechaPermisoOBL").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fechaEntradaOBL < fechaNOW && fechaEntradaOBL.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaPermisoOBL);
+                              document.getElementById("fechaEntradaOBL").value= "";
+                                  document.getElementById("fechaPermisoOBL").value= "";
+                                return 0;
+                              }    
+
+                              if (fechaPermisoOBL > fechaEntradaOBL && fechaEntradaOBL.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fechaPermisoOBL").value= "";
+                                 document.getElementById("fechaEntradaOBL").value= "";
+                                return 0;
+                              }
+
+                         document.getElementById("btnEnviarPER").disabled = true;
+                         
+                           motivo = $("#MotivoPermisoPER").val();
+                           file = $("#CustomFilePER").val();
+  
+                                    while(motivo.length > 0 && file.length > 0){
+                                      document.getElementById("btnEnviarPER").disabled = false;
+                                      break; 
+                                    }            
+                      }
+                    </script>
+
+                  <div class="col" >
+                    <label>Fecha Permiso</label>
+                    <input  class="form-control" type="date" name="fechaPermisoOBL" id="fechaPermisoOBL" required>
+                  </div>
+
+                    <div class="col">
+                      <label>Fecha de Entrada</label>
+                       <input class="form-control" type="date" id="fechaEntradaOBL" name="fechaEntradaOBL" required>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Motivo Permiso</label>
+                  <textarea  type="text" class="form-control" name="MotivoPermisoOBL" id="MotivoPermisoOBL" placeholder="Detalles sobre su permiso" required></textarea>
+                </div>
+                 <div class="custom-file">
+                <input type="file" id="CustomFileOBL" class="custom-file-input" name="CustomFileOBL" required>
+                <label class="custom-file-label" >Subir Evidencia</label>
+              </div>
+              </div>     
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+        <button type="submit" id="btnEnviarPER" class="btn btn-primary">Enviar Solicitud</button>
+      </div>
+       </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 </body>
 </html>

@@ -13,6 +13,9 @@ use App\user;
 use DateTime;
 use Carbon\Carbon;
 use App\medicoG;
+use App\personal;
+use App\obligacionCiudadano;
+
 
 class permisoController extends Controller
 {
@@ -219,10 +222,37 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
                 $medicoG->save(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre);
                 break;
+
+                 case 'Personal':
+                $personal = new personal();
+$idSolicitud =  $personal->id_solicitud = rand(1,99)."PER".$id;
+                $personal->id_permiso_fk = "6";
+                $personal->cod_users_fk = $id;
+                $personal->fecha_salida = $request->fechaPermisoPER; 
+                $personal->fecha_entrada =  $request->fechaEntradaPER;
+                $personal->motivo_permiso = $request->MotivoPermisoPER;
+                $personal->estado_revision = "PENDIENTE";
+                $personal->save(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre);
+                break;
+
+                case 'OBL':
+                $obligacionCiudadano = new obligacionCiudadano();
+$idSolicitud =  $obligacionCiudadano->id_solicitud = rand(1,99)."OBL".$id;
+                $obligacionCiudadano->id_permiso_fk = "7";
+                $obligacionCiudadano->cod_users_fk = $id;
+                $obligacionCiudadano->fecha_salida = $request->fechaPermisoOBL; 
+                $obligacionCiudadano->fecha_entrada =  $request->fechaEntradaOBL;
+                $obligacionCiudadano->motivo_permiso = $request->MotivoPermisoOBL;
+                $request->file('CustomFileOBL')->storeAs('public', $idSolicitud); 
+                $obligacionCiudadano->estado_revision = "PENDIENTE";
+                $obligacionCiudadano->save(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre);
+                break;
         
             
             default:
-               echo "nada papa";
+               echo "ID MALO ";
                 break;
         }
 
@@ -245,63 +275,54 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
                         $estado = medico::findOrFail($id);
                         $estado->estado_revision = "ACEPTADA"; 
                         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                return redirect('/verAdmin');
                      break;
 
                         case 'MAT':
                         $estado = MaterPater::findOrFail($id);
                         $estado->estado_revision = "ACEPTADA"; 
                         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+                  return redirect('/verAdmin');
                      break;
 
                        case 'PAT':
                         $estado = MaterPater::findOrFail($id);
                         $estado->estado_revision = "ACEPTADA"; 
                         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+       return redirect('/verAdmin');
                      break;
 
                        case 'FAL':
                         $estado = fallecimiento::findOrFail($id);
                         $estado->estado_revision = "ACEPTADA"; 
                         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+      return redirect('/verAdmin');
                      break;
 
                          case 'MEDG':
                         $estado = medicoG::findOrFail($id);
                         $estado->estado_revision = "ACEPTADA"; 
                         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $datosMedicosG = medicoG::all();
-        $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater','datosMedicosG'));
+       return redirect('/verAdmin');
                      break;
                  
+
+             case 'PER':
+      $estado = personal::findOrFail($id);
+     $estado->estado_revision = "ACEPTADA"; 
+      $estado->save();
+      return redirect('/verAdmin');
+                     break;
+
+       case 'OBL':
+      $estado = obligacionCiudadano::findOrFail($id);
+     $estado->estado_revision = "ACEPTADA"; 
+      $estado->save();
+     return redirect('/verAdmin');
+                     break;
+
+
+
                  default:
                      # code...
                      break;
@@ -336,12 +357,7 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
         $estado = medico::findOrFail($id);
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
-       $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+        return redirect('/verAdmin');
 
                     break;
 
@@ -349,36 +365,23 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
         $estado = fallecimiento::findOrFail($id);
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
-          $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+      
+     return redirect('/verAdmin');
                         break;
                 
                 case 'MAT':
         $estado = MaterPater::findOrFail($id);
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
-        $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+     
+       return redirect('/verAdmin');
                     break;
 
                     case 'PAT':
         $estado = MaterPater::findOrFail($id);
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
-        $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater'));
+       return redirect('/verAdmin');
                     break;
 
                 case 'MEDG':
@@ -386,16 +389,26 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
         $estado->estado_revision = "RECHAZADA"; 
         $estado->save();
 
-        $datosMedicos = medico::all();
-       $datosFallecidos = fallecimiento::all();
-       $datosMaterPater = MaterPater::all();
-       $datosMedicosG = medicoG::all();
+   return redirect('/verAdmin');
+                    break;  
 
-       $idEmpleado = Auth::user()->id;
-       $empleadoss = empleado::where('cod_empleado','=', $idEmpleado)->first()->tiempo_disponible;
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','empleadoss','datosFallecidos','datosMaterPater','datosMedicosG'));
-                    break;            
 
+                case 'PER':
+        $estado = personal::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+
+  return redirect('/verAdmin');
+                    break;                        
+
+          
+                case 'OBL':
+        $estado = obligacionCiudadano::findOrFail($id);
+        $estado->estado_revision = "RECHAZADA"; 
+        $estado->save();
+
+    return redirect('/verAdmin');
+                    break;             
 
                        
                 default:
@@ -560,6 +573,18 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
                 $medicoG->delete(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
             break;
+
+             case 'PER':
+                $personal = personal::findOrFail($id);
+                $personal->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+            break;
+
+             case 'OBL':
+                $obligacionCiudadano = obligacionCiudadano::findOrFail($id);
+                $obligacionCiudadano->delete(); 
+               return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '); 
+            break;
      default:
          # code...
          break;
@@ -578,11 +603,13 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
         $datosFallecidos = fallecimiento::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         $datosMaterPater = MaterPater::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         $datosMedicosG = medicoG::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+          $datosPersonales = personal::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
+           $datosObligacion = obligacionCiudadano::where('cod_users_fk','=',$id)->orderBy('created_at', 'desc')->get();
         
         $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
        
-        return view('permisos.verPermisos', compact('id','datosMedicos','datosFallecidos','datosMaterPater','empleadoss','datosMedicosG'));
+        return view('permisos.verPermisos', compact('id','datosMedicos','datosFallecidos','datosMaterPater','empleadoss','datosMedicosG','datosPersonales','datosObligacion'));
     }
 
      public function verPermisosAdmin(Request $request)
@@ -596,9 +623,11 @@ $idSolicitud =  $medicoG->id_solicitud = rand(1,99)."MEDG".$id;
        $datosFallecidos = fallecimiento::all();
        $datosMaterPater = MaterPater::all();
        $datosMedicosG = medicoG::all();
+        $datosPersonales = personal::all();
+         $datosObligacion = obligacionCiudadano::all();
        $empleadoss = empleado::where('cod_empleado','=', $id)->first()->tiempo_disponible;
 
-       return view('permisos.verPermisosAdmin', compact('datosMedicos','datosMaterPater','datosFallecidos','empleadoss','datosMedicosG'));
+       return view('permisos.verPermisosAdmin', compact('datosMedicos','datosMaterPater','datosFallecidos','empleadoss','datosMedicosG','datosPersonales','datosObligacion'));
 
        } else{
         return redirect('/');
