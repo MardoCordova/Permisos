@@ -303,7 +303,6 @@ if ($contPER>0) {
       <th scope="col">Fecha Entrada</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
-      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -331,7 +330,6 @@ if ($contPER>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{ $dateCarbon}}</td>
       <td>{{$item->estado_revision}}</td>
-       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
