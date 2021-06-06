@@ -785,7 +785,7 @@ $( document ).ready(function() {
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Personal</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -891,14 +891,10 @@ $( document ).ready(function() {
                                 return 0;
                               }
 
-                         document.getElementById("btnEnviarPER").disabled = true;
+                      
                          
-                           motivo = $("#MotivoPermisoPER").val();
   
-                                    while(motivo.length > 0){
-                                      document.getElementById("btnEnviarPER").disabled = false;
-                                      break; 
-                                    }            
+                                              
                       }
                     </script>
 
@@ -914,10 +910,7 @@ $( document ).ready(function() {
 
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea  type="text" class="form-control" name="MotivoPermisoPER" id="MotivoPermisoPER" placeholder="Detalles sobre su permiso" required></textarea>
-                </div>
+           
               </div>     
           </div>
       </div>

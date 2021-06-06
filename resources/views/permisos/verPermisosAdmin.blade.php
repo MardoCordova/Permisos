@@ -65,6 +65,7 @@ if ($contMedicos>0) {
       <th scope="col">Fecha Permiso</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
+      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -82,6 +83,7 @@ if ($contMedicos>0) {
       <td>{{$item->fecha_permiso}}</td>
       <td>{{$item->created_at}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
@@ -115,6 +117,7 @@ if ($contFallecidos>0) {
       <th scope="col">Fecha Permiso</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
+      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -143,6 +146,7 @@ if ($contFallecidos>0) {
       <td>{{$dateCarbon}}</td>
       <td>{{$newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
@@ -177,8 +181,9 @@ if ($contMaterPater>0) {
       <th scope="col">Hora Salida</th>
       <th scope="col">Hora Entrada</th>
       <th scope="col">Fecha Permiso</th>
-      <th scope="col">Fecha Emisión</th>
+     
       <th scope="col">Estado</th>
+      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -206,6 +211,7 @@ if ($contMaterPater>0) {
       <td>{{$dateCarbon}}</td>
       <td>{{ $newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
@@ -238,6 +244,7 @@ if ($contMedicosG>0) {
       <th scope="col">Fecha Entrada</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
+      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -265,6 +272,7 @@ if ($contMedicosG>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{ $dateCarbon}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
@@ -295,6 +303,7 @@ if ($contPER>0) {
       <th scope="col">Fecha Entrada</th>
       <th scope="col">Fecha Emisión</th>
       <th scope="col">Estado</th>
+      <th scope="col">Evidencia</th>
        <th scope="col"></th>
         <th scope="col"></th>
     </tr>
@@ -322,6 +331,7 @@ if ($contPER>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{ $dateCarbon}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 
@@ -381,6 +391,7 @@ if ($contOBL>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{ $dateCarbon}}</td>
       <td>{{$item->estado_revision}}</td>
+       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
       <td><a href="{{route('permiso.show', $item->id_solicitud)}}" type="button" class="btn btn-success">Aceptar</a></td>
 
 

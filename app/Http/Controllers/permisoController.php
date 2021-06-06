@@ -230,7 +230,7 @@ $idSolicitud =  $personal->id_solicitud = rand(1,99)."PER".$id;
                 $personal->cod_users_fk = $id;
                 $personal->fecha_salida = $request->fechaPermisoPER; 
                 $personal->fecha_entrada =  $request->fechaEntradaPER;
-                $personal->motivo_permiso = $request->MotivoPermisoPER;
+                $personal->motivo_permiso = "NULL";
                 $personal->estado_revision = "PENDIENTE";
                 $personal->save(); 
                return redirect('/permiso')->with('datos','Solictud Medica Enviada, Estimado: '.$nombre);
