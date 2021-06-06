@@ -111,9 +111,9 @@
 
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="display: none">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoPERedit"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" value="NULL" name="MotivoPermisoPERedit"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
                 </div>
             
               </div>     

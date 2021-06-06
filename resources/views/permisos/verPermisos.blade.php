@@ -394,7 +394,7 @@ if ($contPersonales>0) {
   <thead>
     <tr>
       <th scope="col">ID Solicitud</th>
-      <th scope="col">Motivo</th>
+     
          <th scope="col">Fecha Solicitante</th>
       <th scope="col">Fecha Final</th>
       <th scope="col">Fecha Emision</th>
@@ -411,7 +411,7 @@ if ($contPersonales>0) {
       @method('DELETE')
     <tr>
       <th>{{$item->id_solicitud}}</th>
-      <td>{{$item->motivo_permiso}}</td>
+    
           @php
             $de = new DateTime($item->fecha_salida);
             $newDate = $de->format('d-M-Y');

@@ -298,7 +298,7 @@ if ($contPER>0) {
   <thead>
     <tr>
       <th scope="col">ID Solicitud</th>
-      <th scope="col">Motivo</th>
+     
       <th scope="col">Fecha Salida</th>
       <th scope="col">Fecha Entrada</th>
       <th scope="col">Fecha Emisión</th>
@@ -314,7 +314,7 @@ if ($contPER>0) {
      @foreach ($datosPersonales as $item ) 
     <tr onclick="moverDatos(this)" id="{{$item->cod_users_fk}}">
       <th>{{$item->id_solicitud}}</th>  
-      <td>{{$item->motivo_permiso}}</td>
+   
           @php
 
             $de = new DateTime($item->fecha_salida);
