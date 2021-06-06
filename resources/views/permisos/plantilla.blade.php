@@ -193,7 +193,7 @@ use App\empleado;
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -227,7 +227,7 @@ use App\empleado;
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
@@ -345,7 +345,7 @@ $( document ).ready(function() {
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -379,7 +379,7 @@ $( document ).ready(function() {
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
@@ -484,7 +484,7 @@ $( document ).ready(function() {
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -518,7 +518,7 @@ $( document ).ready(function() {
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
@@ -646,7 +646,7 @@ $( document ).ready(function() {
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -680,7 +680,7 @@ $( document ).ready(function() {
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
@@ -803,7 +803,7 @@ $( document ).ready(function() {
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -837,7 +837,7 @@ $( document ).ready(function() {
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
@@ -950,7 +950,7 @@ $( document ).ready(function() {
                 <div class="row"> 
                   <div class="col">
                     <label for="exampleInputEmail1">Nombre Solicitante</label>
-                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}">  
+                    <input type="text" class="form-control" name="NombreEmpleado" placeholder="Ej. Juan Perez" value="{{ Auth::user()->name }}" disabled>  
                   </div>
                   <div class="col">
                     <label>Departamento al que pertenece</label>
@@ -984,7 +984,7 @@ $( document ).ready(function() {
                     $id = Auth::user()->id;
                     $cargo = empleado::where('cod_empleado','=',$id)->first()->cargo_empleado;
                     @endphp
-                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}"> </input>
+                  <input type="text" class="form-control" name="CargoPermiso" value="{{$cargo}}" disabled> </input>
                     </div>                
                   </div>
                 </div>
