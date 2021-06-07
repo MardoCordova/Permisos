@@ -246,6 +246,20 @@ if ($contMaterPater>0) {
 
             $dr = new DateTime($item->created_at);
             $newDateCreated = $dr->format('d-M-Y');
+
+              $idU = Auth::user()->id;
+
+            $sexoo = App\empleado::findOrFail($idU)->sexo;
+            $cont = App\MaterPater::where('cod_users_fk','=',$idU)->count();
+
+            if ($sexoo == "M" && $cont >1) {
+              $asd = "none";
+            }else{
+              $asd = "";
+            }
+
+  
+
           @endphp
 
       <td>{{$newDate}}</td>
@@ -253,8 +267,8 @@ if ($contMaterPater>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
-      @if(App\MaterPater::where('cod_users_fk','=',$id)->count() >= 1 && $item->estado_revision == "PENDIENTE"  ) 
-      <td><a  href="{{route('permisoo.edit', $item->id_solicitud)}}" class="btn btn-success"  
+      @if( $item->estado_revision == "PENDIENTE"  ) 
+      <td><a style="display: {{$asd}}" href="{{route('permisoo.edit', $item->id_solicitud)}}" class="btn btn-success"  
               >Modificar</a></td>
               @endif
 
