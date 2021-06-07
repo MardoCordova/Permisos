@@ -97,7 +97,7 @@ class permisoController extends Controller
                                     }else{
                                         $horaMedioDia = 0;
                                     }
-                                $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas + $horaMedioDia;
+                                $empleados->tiempo_disponible = $empleados->tiempo_disponible  - $horasGastadas;
                                 $empleados->save();
 
 
@@ -508,7 +508,7 @@ $idSolicitud =  $obligacionCiudadano->id_solicitud = rand(1,99)."OBL".$id;
             }
 
         //Le sumamos las horas que iba a ocupar al total que ya tenia
-        $empleados->tiempo_disponible = $empleados->tiempo_disponible + $totalResta - $horaMedioDia; 
+        $empleados->tiempo_disponible = $empleados->tiempo_disponible + $totalResta; 
 
         //Guardamos las horas
        $empleados->save();

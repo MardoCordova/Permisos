@@ -10,7 +10,7 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
+    <div class="container" onchange="validateFormEdit(this)">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico</h5>
         </button>
@@ -74,23 +74,50 @@
 
 
 
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+                     
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            return isValid;
-                          }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPermiso").value= año+"-"+mes+"-"+dia;
+
+});
+
+                      function validateFormEdit(inputField) {
+                         document.getElementById("btnEnviar").disabled = true;
+                        var entrada = $("#horaEntrada").val();
+                         var salida = $("#horaSalida").val();
+                         var fechaEdit = $("#fechaPermiso").val();
+                                               
+                              if (fechaEdit < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaPermiso").value= año+"-"+mes+"-"+dia;
+                              }      
+
+                                     if (entrada) {
+                                      if (entrada>salida) {
+                                             document.getElementById("btnEnviar").disabled = false;
+                                            }else{
+                                               document.getElementById("btnEnviar").disabled = true;
+                                               alert("La Hora de Entrada tiene que ser mayor que la Hora Salida");
+                                               return 0;
+                                            }
+                                          }else{
+                                            document.getElementById("btnEnviar").disabled = false;
+                                          }
+                      }
                     </script>
-
                   
                     <div class="col">
                       
@@ -101,7 +128,7 @@
                       $hSalida  = date("H:i", strtotime($horaSalida)); 
                       @endphp
 
-                       <input value="{{$hSalida}}" class="form-control" type="time" name="horaSalida" >
+                       <input  max="16:00" min="08:00"  value="{{$hSalida}}" class="form-control" type="time" name="horaSalida" id="horaSalida" required>
                     </div>
                     
                     <div class="col">
@@ -112,7 +139,7 @@
                       $hEntrada  = date("H:i", strtotime($horaEntrada)); 
                       @endphp
 
-                      <input value="{{$hEntrada}}" class="form-control" type="time" name="horaEntrada" >
+                      <input  max="16:30" min="08:30"  value="{{$hEntrada}}" class="form-control" type="time" name="horaEntrada" id="horaEntrada" required>
                     </div>   
                   
 
@@ -120,7 +147,7 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermiso"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermiso"  placeholder="Detalles sobre su permiso" required>{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
                 <input  type="file" class="custom-file-input" name="CustomFile" >
@@ -131,7 +158,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+        <button type="submit" id="btnEnviar" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>

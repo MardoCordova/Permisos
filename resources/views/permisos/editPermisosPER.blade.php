@@ -10,7 +10,7 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
+    <div class="container" onchange="validateFormPEREdit(this)">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Personal</h5>
         </button>
@@ -73,22 +73,54 @@
 
 
 
-
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
-                            return isValid;
-                          }
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fSalidaPER").value= año+"-"+mes+"-"+dia;
 
+});
+                      function validateFormPEREdit(inputField) {
+                          var fSalidaPER = $("#fSalidaPER").val();
+                          var fEntradaPER = $("#fEntradaPER").val();
+
+                             
+                                               
+                              if (fSalidaPER < fechaNOW && fSalidaPER.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fSalidaPER").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fEntradaPER < fechaNOW && fEntradaPER.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fSalidaPER);
+                              document.getElementById("fEntradaPER").value= "";
+                                  document.getElementById("fSalidaPER").value= "";
+                                return 0;
+                              }    
+
+                              if (fSalidaPER > fEntradaPER && fEntradaPER.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fSalidaPER").value= "";
+                                 document.getElementById("fEntradaPER").value= "";
+                                return 0;
+                              }
+
+                      
+                         
+  
+                                              
+                      }
                     </script>
                      @php
                      $edit = new DateTime($estado->fecha_salida);
@@ -100,12 +132,12 @@
                   
                     <div class="col"> 
                       <label>Fecha de Salida</label>
-                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaPER" >
+                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaPER" id="fSalidaPER" required>
                     </div>
                     
                     <div class="col">
                       <label>Fecha de Entrada</label>
-                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaPER" >
+                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaPER" id="fEntradaPER" required>
                     </div>   
                   
 

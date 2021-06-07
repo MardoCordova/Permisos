@@ -10,7 +10,7 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
+    <div class="container"  onmousemove="validateFormPMEdit(this)">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Maternidad/Paternidad</h5>
         </button>
@@ -69,24 +69,34 @@
                 </div>
 
                 
-
-
-
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            return isValid;
-                          }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaPMSalida").value= año+"-"+mes+"-"+dia;
+
+});
+
+                      function validateFormPMEdit(inputField) {
+                           var fechaPMSalida = $("#fechaPM").val();
+                                               
+                              if (fechaPMSalida < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaPM").value= "";
+                              }  
+                        
+                      }
                     </script>
 
 
@@ -98,7 +108,6 @@
 
                      @php
          use App\MaterPater;
-
           $id = Auth::user()->id;
           $genero = empleado::findOrFail($id)->sexo;
                 if ($genero == "F") {
@@ -107,7 +116,6 @@
                 }else{
                     $val = "none";
                 } 
-
                 if ($genero == "M") {
                     $valM = "";
                     $numDispo = empleado::findOrFail($id)->dispo_materpater; 
@@ -122,20 +130,20 @@
                       <div class="col">
                         
                     <label>Fecha Salida </label>
-                    <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaPM">
+                    <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaPM" id="fechaPM">
                       </div>
                     
 
                      <div class="col" style="display: {{$valM}}">
                         <label>Dias Disponibles </label>
-                          <input  class="form-control" type="number"  name="cantDias" id="cantDias" max="3" min="1">
+                          <input  class="form-control" type="number" value="1" name="cantDias" id="cantDias" max="3" min="1" >
       
                       </div>
                   </div>
                  </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoPM"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoPM"  placeholder="Detalles sobre su permiso" required>{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
                 <input  type="file" class="custom-file-input" name="CustomFilePM" >

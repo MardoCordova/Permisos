@@ -10,7 +10,7 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
+    <div class="container" onchange="validateFormOBLEdit(this)">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Solicitud por Obligacion Ciudadana</h5>
         </button>
@@ -74,21 +74,49 @@
 
 
 
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
-                            return isValid;
-                          }
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fSalidaOBL").value= año+"-"+mes+"-"+dia;
 
+});
+                      function validateFormOBLEdit(inputField) {
+                          var fSalidaOBL = $("#fSalidaOBL").val();
+                          var fEntradaOBL = $("#fEntradaOBL").val();
+                  
+                              if (fSalidaOBL < fechaNOW && fSalidaOBL.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fSalidaOBL").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fEntradaOBL < fechaNOW && fEntradaOBL.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fSalidaOBL);
+                              document.getElementById("fEntradaOBL").value= "";
+                                  document.getElementById("fSalidaOBL").value= "";
+                                return 0;
+                              }    
+
+                              if (fSalidaOBL > fEntradaOBL && fEntradaOBL.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fSalidaOBL").value= "";
+                                 document.getElementById("fEntradaOBL").value= "";
+                                return 0;
+                              }
+
+                                 
+                      }
                     </script>
                      @php
                      $edit = new DateTime($estado->fecha_salida);
@@ -100,12 +128,12 @@
                   
                     <div class="col"> 
                       <label>Fecha de Salida</label>
-                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaOBL" >
+                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaOBL" id="fSalidaOBL" required>
                     </div>
                     
                     <div class="col">
                       <label>Fecha de Entrada</label>
-                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaOBL" >
+                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaOBL" id="fEntradaOBL" required>
                     </div>   
                   
 
@@ -113,7 +141,7 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoOBLedit"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoOBLedit"  placeholder="Detalles sobre su permiso" required>{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
                 <input  type="file" class="custom-file-input" name="CustomFileEditOBL" >
@@ -123,7 +151,7 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+      
         <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>

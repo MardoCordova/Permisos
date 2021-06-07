@@ -10,8 +10,8 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
-      <div class="modal-header">
+    <div class="container" onchange="validateFormMEDGEdit(this)">
+      <div class="modal-header" >
         <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Medico Grave</h5>
         </button>
       </div>
@@ -74,22 +74,54 @@
 
 
 
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
-                            return isValid;
-                          }
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fSalidaMEDG").value= año+"-"+mes+"-"+dia;
 
+});
+                      function validateFormMEDGEdit(inputField) {
+                          var fSalidaMEDG = $("#fSalidaMEDG").val();
+                          var fEntradaMEDG = $("#fEntradaMEDG").val();
+
+                             
+                                               
+                              if (fSalidaMEDG < fechaNOW && fSalidaMEDG.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                               document.getElementById("fSalidaMEDG").value= año+"-"+mes+"-"+dia;
+                                return 0;
+                              }
+
+                               if (fEntradaMEDG < fechaNOW && fEntradaMEDG.length > 0) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fSalidaMEDG);
+                              document.getElementById("fEntradaMEDG").value= "";
+                                  document.getElementById("fSalidaMEDG").value= "";
+                                return 0;
+                              }    
+
+                              if (fSalidaMEDG > fEntradaMEDG && fEntradaMEDG.length > 0) {
+                                alert("La Fecha tiene que Salida tiene que ser menor a la Fecha Entrada");
+                                 document.getElementById("fSalidaMEDG").value= "";
+                                 document.getElementById("fEntradaMEDG").value= "";
+                                return 0;
+                              }
+
+                      
+                                   
+                      }
                     </script>
+
                      @php
                      $edit = new DateTime($estado->fecha_salida);
                     $fechaEdit = $edit->format('Y-m-d');
@@ -100,12 +132,12 @@
                   
                     <div class="col"> 
                       <label>Fecha de Salida</label>
-                       <input value="{{$fechaEdit}}" class="form-control" type="date" name="fSalidaMEDG" >
+                       <input value="{{$fechaEdit}}" class="form-control" type="date" id="fSalidaMEDG" name="fSalidaMEDG" required>
                     </div>
                     
                     <div class="col">
                       <label>Fecha de Entrada</label>
-                      <input value="{{$fEdit}}" class="form-control" type="date" name="fEntradaMEDG" >
+                      <input value="{{$fEdit}}" class="form-control" type="date" id="fEntradaMEDG" name="fEntradaMEDG" required>
                     </div>   
                   
 
@@ -113,7 +145,7 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoMEDGedit"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoMEDGedit"  placeholder="Detalles sobre su permiso" required>{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
                 <input  type="file" class="custom-file-input" name="CustomFileEditMEDG" >
@@ -123,8 +155,8 @@
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+       
+        <button type="submit" id="btnEnviarMEDGEdit" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>

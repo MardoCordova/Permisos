@@ -10,7 +10,7 @@
 <form method="POST" action="{{route('permisoo.update', $estado->id_solicitud)}}">
   @method('PUT')
   @csrf
-    <div class="container">
+    <div class="container"  onmousemove="validateFormFAL(this)">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Solicitud para Permiso Fallecimiento</h5>
         </button>
@@ -71,22 +71,36 @@
                 
 
 
-
-                   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
                     <script type="text/javascript">
-                        function validateHhMm(inputField) {
-                            var isValid =/^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
+$( document ).ready(function() {
+ f = new Date();
+ año = f.getFullYear();
+ mes = '' + (f.getMonth()+1);
+ dia = '' + f.getDate();
 
-                            if (isValid) {
-                              inputField.style.backgroundColor = 'green';
-                            } else {
-                              inputField.style.backgroundColor = 'black';
-                            }
+ if (mes.length <2) 
+  mes = "0"+mes;  
 
-                            return isValid;
-                          }
+ if (dia.length < 2)
+   dia = "0"+dia;
+ fechaNOW = document.getElementById("fechaFA").value= año+"-"+mes+"-"+dia;
 
+});
+
+                      function validateFormFAL(inputField) {
+                         document.getElementById("btnEnviarFAA").disabled = true;
+                          
+                           motivo = $("#MotivoPermisoFA").val();
+                             var fechaFA = $("#fechaFA").val();
+                                               
+                              if (fechaFA < fechaNOW ) {
+                                alert("La Fecha tiene que ser mayor o igual que: "+ fechaNOW);
+                                fechaNOW = document.getElementById("fechaFA").value= año+"-"+mes+"-"+dia;
+                              }  
+  
+                                         
+                      }
                     </script>
 
 
@@ -100,27 +114,21 @@
                     <div class="row">
                         <div class="col">
                           <label>Fecha Permiso </label>
-                          <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaFA">
+                          <input  class="form-control" value="{{$fechaEdit}}"  type="date" name="fechaFA" id="fechaFA" required>
                           </div>
                     <div class="col"> 
                           <label>Nombre del Fallecido</label>
-                          <input  class="form-control" value="{{$estado->nombre_fallecido}}" type="text" name="nombreFallecido">
+                          <input  class="form-control" value="{{$estado->nombre_fallecido}}" type="text" name="nombreFallecido" required>
                     </div>
                            <div class="col"> 
                     <label>Relacion con la persona</label>
-                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" >
-                      <option  value="">Seleccione su relación</option>
-                               @php               
-                               use App\fallecimiento;  
-                              $id = Auth::user()->id;
-                              $relacionFallecido = fallecimiento::where('id_solicitud','=',$estado->id_solicitud)->first()->relacion_fallecido;
-                              @endphp
-                      <option selected disabled >{{$relacionFallecido}}</option>
+                      <select class="custom-select" name="relacionFallecido" id="relacionFallecido" required>
+                      <option selected value="">Seleccione su relación</option>
+                  
                       <option>Madre</option>
                       <option>Padre</option> 
-                      <option>Hermanos</option> 
                       <option>Hijos</option> 
-                      <option>Otros</option>          
+                      <option>Conyugue</option>          
                     </select> 
                         </div>                      
                     </div>
@@ -128,18 +136,18 @@
                  
                 <div class="form-group">
                   <label for="exampleInputPassword1">Motivo Permiso</label>
-                  <textarea type="text"  class="form-control" name="MotivoPermisoFA"  placeholder="Detalles sobre su permiso">{{$estado->motivo_permiso}}  </textarea>
+                  <textarea type="text"  class="form-control" name="MotivoPermisoFA" id="MotivoPermisoFA" placeholder="Detalles sobre su permiso" required>{{$estado->motivo_permiso}}  </textarea>
                 </div>
                 <div class="custom-file">
-                <input  type="file" class="custom-file-input" name="CustomFileFA" >
+                <input  type="file" class="custom-file-input"  >
                 <label class="custom-file-label" >Subir Evidencia</label>
               </div>
               </div>     
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
-        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+      
+        <button type="submit" id="btnEnviarFAA" class="btn btn-primary">Enviar Solicitud</button>
       </div>
        </form>
     </div>

@@ -124,7 +124,7 @@ if ($contFallecidos>0) {
         </button>
       </h2>
     </div>
-    <div style="display: {{$val}}" id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
+    <div style="display: {{$val}}" id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#headingTwo">
       <div class="card-body">
   <label style="display: {{$val}}"></label>
   <div class="col" style="display: {{$val}}">
@@ -206,7 +206,7 @@ if ($contMaterPater>0) {
         </button>
       </h2>
     </div>
-    <div style="display: {{$val}}" id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordionExample">
+    <div style="display: {{$val}}" id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#headingThree">
       <div class="card-body">
        
 
@@ -253,7 +253,7 @@ if ($contMaterPater>0) {
       <td>{{$newDateCreated}}</td>
       <td>{{$item->estado_revision}}</td>
       <td> <a href='/storage/{{$item->id_solicitud}}'>Ver PDF</a></td>
-      @if(App\MaterPater::where('cod_users_fk','=',$id)->count() <= 1 && $item->estado_revision == "PENDIENTE"  ) 
+      @if(App\MaterPater::where('cod_users_fk','=',$id)->count() >= 1 && $item->estado_revision == "PENDIENTE"  ) 
       <td><a  href="{{route('permisoo.edit', $item->id_solicitud)}}" class="btn btn-success"  
               >Modificar</a></td>
               @endif
@@ -284,16 +284,16 @@ if ($contMedicoG>0) {
   $val = 'none';
 }
 @endphp
-<div class="accordion" id="accordionExample">
+<div class="accordion" id="accordionExample12">
   <div class="card">
     <div class="card-header" id="headingOne"  style="display: {{$val}}">
       <h2 class="mb-0">
-        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#asddd" aria-expanded="true" aria-controls="asddd">
          <h3>Permisos Medicos Graves</h3>
         </button>
       </h2>
     </div>
-    <div  style="display: {{$val}}" id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div  style="display: {{$val}}" id="asddd" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample12">
       <div class="card-body"> 
 <!-- MEDICO GRAVE -->
 <div class="container-fluid">
@@ -375,16 +375,16 @@ if ($contPersonales>0) {
   $val = 'none';
 }
 @endphp
-<div class="accordion" id="accordionExample">
+<div class="accordion" id="accordionExample2">
   <div class="card">
     <div class="card-header" id="headingOne"  style="display: {{$val}}">
       <h2 class="mb-0">
-        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#qwe" aria-expanded="true" aria-controls="qwe">
          <h3>Permisos Personales</h3>
         </button>
       </h2>
     </div>
-    <div  style="display: {{$val}}" id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div  style="display: {{$val}}" id="qwe" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample2">
       <div class="card-body"> 
 <!-- Personal -->
 <div class="container-fluid">
@@ -463,16 +463,16 @@ if ($contOBL>0) {
   $val = 'none';
 }
 @endphp
-<div class="accordion" id="accordionExample">
+<div class="accordion" id="asd">
   <div class="card">
     <div class="card-header" id="headingOne"  style="display: {{$val}}">
       <h2 class="mb-0">
-        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#ert" aria-expanded="true" aria-controls="ert">
          <h3>Permisos por Obligacion Ciudadana</h3>
         </button>
       </h2>
     </div>
-    <div  style="display: {{$val}}" id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+    <div  style="display: {{$val}}" id="ert" class="collapse show" aria-labelledby="headingOne" data-parent="#asd">
       <div class="card-body"> 
 <!-- Personal -->
 <div class="container-fluid">
